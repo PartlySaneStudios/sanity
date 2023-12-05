@@ -28,7 +28,7 @@ const client = new Client({
 require('dotenv').config();
 
 client.on("ready", () => {
-    require("./src/events/loader")(client);
+  require("./src/events/loader")(client);
 });
 
 client.login(process.env.TOKEN);
