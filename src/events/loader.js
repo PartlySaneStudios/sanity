@@ -11,7 +11,7 @@ module.exports = async (client) => {
     */
     client.commands = new Collection();
     // Read all files in the commands folder
-    fs.readdir("./src/commands/", (err, files) => {
+    fs.readdir("./src/commands/", async (err, files) => {
         if (err) return console.error(err);
         // Filter out all non .js files
         let jsfiles = files.filter(f => f.split(".").pop() === "js");
@@ -34,6 +34,7 @@ module.exports = async (client) => {
             // Set a new command in the Collection
             client.commands.set(data.name, {
                 ...data,
+                autocomplete: file.autocomplete || null,
                 run: file.run
             });
 
@@ -43,6 +44,8 @@ module.exports = async (client) => {
                 /*
                  * Creating them globally is not best, as it takes a really long time for them to update
                 */
+                const guild = await client.guilds.fetch(id);
+
                 if (guild) {
                     guild.commands.create(data);
                 } else {
