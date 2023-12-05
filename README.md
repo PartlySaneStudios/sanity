@@ -13,6 +13,7 @@ To get the Token, head to the [Developer Portal](https://discord.com/developers/
 While we are on the "General Information" Tab, copy the APPLICATION ID into your clipboard. (Having clipboard history enabled is best)
 Now head to the "Bot" Tab, and press "Reset Token". You might need to enter your Auth Token.
 The Token is now visible, press the copy button.
+In the "Bot" Tab, scroll down to the "Privileged Gateway Intents" and enable "Presence Intent", "Server Members Intent" & "Message Content Intent". If you dont do that, the bot won't start.
 In the project, create a file called ".env", open that file, and add the line "TOKEN=your_token", with your token replacing the "your_token" (You dont need Quotation marks)
 
 To invite your Bot, head to [Permission Calculator](discordapi.com/permissions.html) and copy your APPLICATION ID into the "Client ID" line.
