@@ -18,7 +18,7 @@ module.exports = async (client) => {
 function loadAllFilesInFolder(path, client) {
     // Read all files in the commands folder
     fs.readdir(path, (err, files) => {
-        var commandsAdded = 0
+        let commandsAdded = 0
         if (err) return console.error(err);
         // Filter out all non .js files
         // let jsfiles = files.filter(f => f.split(".").pop() === "js");
@@ -29,7 +29,7 @@ function loadAllFilesInFolder(path, client) {
             // If the file is a folder, run itself
             if (fs.lstatSync(fullFilePath).isDirectory()) {
                 console.log(`${fullFilePath} is a directory: ${fs.lstatSync(path).isDirectory()}`)
-                loadAllFilesInFolder(`${fullFilePath}`)
+                loadAllFilesInFolder(`${fullFilePath}`, client)
                 continue;
             }
             // If the file is not a .js file, pass
@@ -43,7 +43,7 @@ function loadAllFilesInFolder(path, client) {
                 client.commands.set(command.data.name, command);
 
                 // Looping through all config entries
-                for (let id of require("../database/config.json").guilds) {
+                for (let id of require("../config/config.json").guilds) {
                     /*
                      * Creating them globally is not best, as it takes a really long time for them to update
                     */
@@ -57,6 +57,6 @@ function loadAllFilesInFolder(path, client) {
             commandsAdded++
         }
 
-        console.log(`Added ${commandsAdded} commands total to ${require("../database/config.json").guilds.length} servers.`)
+        console.log(`Added ${commandsAdded} commands total to ${require("../config/config.json").guilds.length} servers.`)
     })
 }
