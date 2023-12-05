@@ -18,7 +18,7 @@ module.exports = async (client) => {
 function loadAllFilesInFolder(path, client) {
     // Read all files in the commands folder
     fs.readdir(path, (err, files) => {
-        var commandsAdded = 0
+        let commandsAdded = 0
         if (err) return console.error(err);
         // Filter out all non .js files
         // let jsfiles = files.filter(f => f.split(".").pop() === "js");
