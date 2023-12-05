@@ -2,8 +2,6 @@ const { Collection } = require('discord.js')
 const fs = require("fs");
 
 module.exports = async (client) => {
-    console.log("\x1b[42m%s\x1b[0m", "Ready.");
-
     require("./onCommandExec")(client);
 
     /* 
@@ -56,4 +54,6 @@ module.exports = async (client) => {
 
         console.log(`Loaded ${jsfiles.length} slash commands.`);
     });
+
+    console.log("\x1b[42m%s\x1b[0m", "Ready.");
 };
