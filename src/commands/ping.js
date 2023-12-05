@@ -17,6 +17,6 @@ module.exports = {
         ]);
     },
     run: async (client, interaction, options) => {
-        await interaction.reply("Pong! " + options[0].value);
+        await interaction.reply(`Pong! ${options[0].value}`);
     }
 }
