@@ -43,7 +43,8 @@ module.exports = async (client) => {
                 /*
                  * Creating them globally is not best, as it takes a really long time for them to update
                 */
-                client.guilds.cache.get(id).commands.create(data);
+                client.guilds.cache.get(id)?.commands.create(data);
+                console.log(`Added commands to server ${id}`)
             }
         }
 
