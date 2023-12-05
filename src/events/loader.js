@@ -29,7 +29,7 @@ function loadAllFilesInFolder(path, client) {
             // If the file is a folder, run itself
             if (fs.lstatSync(fullFilePath).isDirectory()) {
                 console.log(`${fullFilePath} is a directory: ${fs.lstatSync(path).isDirectory()}`)
-                loadAllFilesInFolder(`${fullFilePath}`)
+                loadAllFilesInFolder(`${fullFilePath}`, client)
                 continue;
             }
             // If the file is not a .js file, pass
@@ -57,7 +57,7 @@ function loadAllFilesInFolder(path, client) {
             });
 
             // Looping through all config entries
-            for (let id of require("../database/config.json").guilds) {
+            for (let id of require("../config/config.json").guilds) {
                 /*
                  * Creating them globally is not best, as it takes a really long time for them to update
                 */
@@ -68,6 +68,6 @@ function loadAllFilesInFolder(path, client) {
             commandsAdded++
         }
 
-        console.log(`Added ${commandsAdded} commands total to ${require("../database/config.json").guilds.length} servers.`)
+        console.log(`Added ${commandsAdded} commands total to ${require("../config/config.json").guilds.length} servers.`)
     })
 }
