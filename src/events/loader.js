@@ -2,23 +2,12 @@ const { Collection } = require('discord.js')
 const fs = require("fs");
 
 module.exports = async (client) => {
-    console.log("\x1b[42m%s\x1b[0m", "Ready.");
-
-    require("./onCommandExec")(client);
-
     /* 
      * Load commands
     */
     client.commands = new Collection();
     // Read all files in the commands folder
-    loadAllFilesInFolder("src/commands", client)
-};
-
-// Loads all commands recursively
-function loadAllFilesInFolder(path, client) {
-    // Read all files in the commands folder
-    fs.readdir(path, (err, files) => {
-        var commandsAdded = 0
+    fs.readdir("./src/commands/", (err, files) => {
         if (err) return console.error(err);
         // Filter out all non .js files
         // let jsfiles = files.filter(f => f.split(".").pop() === "js");
@@ -53,6 +42,7 @@ function loadAllFilesInFolder(path, client) {
             // Set a new command in the Collection
             client.commands.set(data.name, {
                 ...data,
+                autocomplete: file.autocomplete || null,
                 run: file.run
             });
 
@@ -61,13 +51,12 @@ function loadAllFilesInFolder(path, client) {
                 /*
                  * Creating them globally is not best, as it takes a really long time for them to update
                 */
-                client.guilds.cache.get(id)?.commands.create(data);
-                console.log(`Added commands from ${path} to server ${id}`)
+                client.guilds.cache.get(id).commands.create(data);
             }
-
-            commandsAdded++
         }
 
-        console.log(`Added ${commandsAdded} commands total to ${require("../database/config.json").guilds.length} servers.`)
-    })
-}
+        console.log(`Loaded ${jsfiles.length} slash commands.`);
+    });
+
+    require("./onCommandExec")(client);
+};
