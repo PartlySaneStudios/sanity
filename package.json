@@ -11,9 +11,12 @@
     "url": "git+https://github.com/PartlySaneStudios/sanity.git"
   },
   "author": "Su386, J10a1n15",
-  "license": "ISC",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/PartlySaneStudios/sanity/issues"
   },
-  "homepage": "https://github.com/PartlySaneStudios/sanity#readme"
+  "homepage": "https://github.com/PartlySaneStudios/sanity#readme",
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  }
 }
