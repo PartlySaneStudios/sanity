@@ -43,7 +43,11 @@ module.exports = async (client) => {
                 /*
                  * Creating them globally is not best, as it takes a really long time for them to update
                 */
-                client.guilds.cache.get(id)?.commands.create(data);
+                if (guild) {
+                    guild.commands.create(data);
+                } else {
+                    console.log(`Guild with ID ${id} not found.`);
+                }
             }
         }
 
