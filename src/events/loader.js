@@ -38,7 +38,7 @@ function loadAllFilesInFolder(path, client) {
             }
             // Load file
             let command = require(`../../${fullFilePath}`);
-            if ("data" in command && "execute" in command) {
+            if ("data" in command && "run" in command) {
                 // Set a new command in the Collection
                 client.commands.set(command.data.name, command);
 
@@ -51,7 +51,7 @@ function loadAllFilesInFolder(path, client) {
                     //console.log(`Added commands from ${path} to server ${id}`)
                 }
             } else {
-                console.log(`Missing "data" or "execute" for command at ${data.name}.`)
+                console.log(`Missing "data" or "run" for command at ${data.name}.`)
             }
 
             commandsAdded++

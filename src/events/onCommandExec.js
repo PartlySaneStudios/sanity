@@ -1,9 +1,6 @@
 const { Events } = require('discord.js');
 
 module.exports = async (client) => {
-    /*
-     * Slash Commands
-    */
     client.on(Events.InteractionCreate, async (interaction) => {
         if (!interaction.isCommand()) return;
         // Get the command from the collection
@@ -16,7 +13,7 @@ module.exports = async (client) => {
 
         try {
             // Execute the command
-            cmd.execute(client, interaction);
+            cmd.run(client, interaction);
         } catch (error) {
             console.error(error);
             await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
