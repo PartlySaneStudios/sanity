@@ -10,7 +10,7 @@ module.exports = async (client) => {
     */
     // Read all files in the commands folder
     loadAllFilesInFolder("src/commands", client)
-    
+
     console.log("\x1b[42m%s\x1b[0m", "Ready.");
 };
 
@@ -37,33 +37,21 @@ function loadAllFilesInFolder(path, client) {
                 continue
             }
             // Load file
-            let file = require(`../../${fullFilePath}`);
+            let command = require(`../../${fullFilePath}`);
+            if ("data" in command && "execute" in command) {
+                // Set a new command in the Collection
+                client.commands.set(command.data.name, command);
 
-            // Set command properties, which will be used when creating the slash command
-            let name = file.name || file.replace(".js", "");
-            let description = file.description || `No description provided for ${fullFilePath}.`;
-            let options = file.options || [];
-
-            const data = {
-                name,
-                description,
-                options
-            }
-
-            // Set a new command in the Collection
-            client.commands.set(data.name, {
-                ...data,
-                autocomplete: file.autocomplete || null,
-                run: file.run
-            });
-
-            // Looping through all config entries
-            for (let id of require("../database/config.json").guilds) {
-                /*
-                 * Creating them globally is not best, as it takes a really long time for them to update
-                */
-                client.guilds.cache.get(id)?.commands.create(data);
-                console.log(`Added commands from ${path} to server ${id}`)
+                // Looping through all config entries
+                for (let id of require("../database/config.json").guilds) {
+                    /*
+                     * Creating them globally is not best, as it takes a really long time for them to update
+                    */
+                    client.guilds.cache.get(id)?.commands.create(command.data.toJSON());
+                    //console.log(`Added commands from ${path} to server ${id}`)
+                }
+            } else {
+                console.log(`Missing "data" or "execute" for command at ${data.name}.`)
             }
 
             commandsAdded++

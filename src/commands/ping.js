@@ -1,22 +1,10 @@
-const { ApplicationCommandOptionType } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-    name: "ping",
-    description: "Pong!",
-    options: [{
-        name: "exampleinput",
-        type: ApplicationCommandOptionType.String,
-        description: "Example input",
-        autocomplete: true,
-        required: true
-    }],
-    async autocomplete(interaction) {
-        await interaction.respond([
-            { name: "Pong!", value: "Woo" }, 
-            { name: "Ping!", value: "Hello HI" }
-        ]);
-    },
-    run: async (client, interaction, options) => {
-        await interaction.reply(`Pong! ${options[0].value}`);
+    data: new SlashCommandBuilder()
+        .setName("ping")
+        .setDescription("Replies with Pong!"),
+    async execute(client, interaction) {
+        await interaction.reply(`Pong!`);
     }
 }
