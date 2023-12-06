@@ -8,8 +8,7 @@ module.exports = {
     .addSubcommand(subcommand =>
       subcommand
         .setName("list")
-        .setDescription("List all announcements"))
-  ,
+        .setDescription("List all announcements")),
   async run(client, interaction) {
     const subcommand = interaction.options.getSubcommand();
 
@@ -23,6 +22,7 @@ async function handleListCommand(client, interaction) {
   const embed = new EmbedBuilder()
     .setColor(0xc297db)
     .setTitle("Announcements:")
+    .setURL("https://raw.githubusercontent.com/PartlySaneStudios/partly-sane-skies-public-data/main/data/main_menu.json")
   const announcements = await Announcements.getAnnouncements();
 
   for (let i = 1; i <= announcements.length; i++) {
