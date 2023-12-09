@@ -4,9 +4,7 @@
 //
 
 
-
 const { Octokit } = require('@octokit/rest');
-
 
 // Returns an object with json and sha keys
 exports.getMainMenuData = async function getMainMenuData() {
