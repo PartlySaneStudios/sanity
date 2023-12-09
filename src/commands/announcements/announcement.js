@@ -1,3 +1,9 @@
+//
+// Written by Su386'and J10a1n15.
+// See LICENSE for copyright and license notices.
+//
+
+
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const MainMenuData = require("../../data/main_menu.js")
 const { Octokit } = require('@octokit/rest');
