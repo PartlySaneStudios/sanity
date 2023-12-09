@@ -32,7 +32,6 @@ function loadAllFilesInFolder(path, client) {
             const fullFilePath = `${path}/${fileName}`
             // If the file is a folder, run itself
             if (fs.lstatSync(fullFilePath).isDirectory()) {
-                console.log(`${fullFilePath} is a directory: ${fs.lstatSync(path).isDirectory()}`)
                 loadAllFilesInFolder(`${fullFilePath}`, client)
                 continue;
             }
@@ -61,6 +60,6 @@ function loadAllFilesInFolder(path, client) {
             commandsAdded++
         }
 
-        console.log(`Added ${commandsAdded} commands total to ${require("../config/config.json").guilds.length} servers.`)
+        console.log(`Added ${commandsAdded} command${commandsAdded != 1 ? "s" : ""} total to ${require("../config/config.json").guilds.length} server${require("../config/config.json").guilds.length != 1 ? "s" : ""}.`)
     })
 }
