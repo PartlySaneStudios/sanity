@@ -1,3 +1,9 @@
+//
+// Written by Su386 and J10a1n15.
+// See LICENSE for copyright and license notices.
+//
+
+
 const { Collection } = require('discord.js')
 const fs = require("fs");
 
@@ -20,8 +26,6 @@ function loadAllFilesInFolder(path, client) {
     fs.readdir(path, (err, files) => {
         let commandsAdded = 0
         if (err) return console.error(err);
-        // Filter out all non .js files
-        // let jsfiles = files.filter(f => f.split(".").pop() === "js");
         if (files.length <= 0) return console.log(`No slash commands found in ${path}.`);
 
         for (let fileName of files) {

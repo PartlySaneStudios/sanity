@@ -1,3 +1,9 @@
+//
+// Written by J10a1n15.
+// See LICENSE for copyright and license notices.
+//
+
+
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
   intents: [
