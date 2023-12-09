@@ -1,3 +1,9 @@
+//
+// Written by Su386 and J10a1n15.
+// See LICENSE for copyright and license notices.
+//
+
+
 const { Collection } = require('discord.js')
 const fs = require("fs");
 
