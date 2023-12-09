@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/PartlySaneStudios/sanity#readme",
   "dependencies": {
+    "@octokit/rest": "^20.0.2",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "octokit": "^3.1.2"
   }
 }
