@@ -3,14 +3,18 @@
 // See LICENSE for copyright and license notices.
 //
 
-
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const MainMenuData = require("../../data/main_menu.js")
-const { Octokit } = require('@octokit/rest');
+const MainMenuData = require("../data/main_menu.js");
+const SystemUtils = require("../utils/SystemUtils.js");
+const config = require("../config/config.json");
 
-
-const config = require("../../config/config.json")
-
+// Announcement data structure
+const AnnouncementPrototype = {
+  name: "",
+  date: "",
+  description: "",
+  link: "",
+}
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,36 +30,42 @@ module.exports = {
         .setName("remove") // Creates remove subcommand
         .setDescription("List removes an announcement at a given position in the list. (First = 1)")
         .addIntegerOption(option =>
-          option.setName("index")
+          option
+            .setName("index")
             .setRequired(true)
             .setDescription("The index to add a new item (first = 1)")
         )
     )
     .addSubcommand(subcommand => subcommand
       .setName("add") // Creates add subcommand
-      .setDescription("Adds a new announcement at the given position in the list. The former announcement 1 becomes 2. (First = 1)")
+      .setDescription("Adds announcement, shifts positions. Former 1 becomes 2. (First = 1)")
       .addIntegerOption(option =>
-        option.setName("index") 
+        option
+          .setName("index")
           .setRequired(true)
           .setDescription("The index to add a new item (first = 1)")
       )
       .addStringOption(option =>
-        option.setName("title")
+        option
+          .setName("title")
           .setRequired(true)
           .setDescription("The title of the new announcement")
       )
       .addStringOption(option =>
-        option.setName("date")
+        option
+          .setName("date")
           .setRequired(true)
           .setDescription("The date of the new annoncement")
       )
       .addStringOption(option =>
-        option.setName("description")
+        option
+          .setName("description")
           .setRequired(true)
           .setDescription("The description of the new annoncement")
       )
       .addStringOption(option =>
-        option.setName("link")
+        option
+          .setName("link")
           .setRequired(true)
           .setDescription("The link of the new annoncement")
       )
@@ -82,11 +92,11 @@ module.exports = {
 async function handleListCommand(client, interaction) {
   // Creates new embed
   const embed = new EmbedBuilder()
-    .setColor(0xc297db)
+    .setColor(config.color)
     .setTitle("Announcements:")
     .setURL(`https://github.com/${config.data.user}/${config.data.repo}/blob/main/data/main_menu.json`)
 
-    // Get's announcement data
+  // Get's announcement data
   const announcements = await MainMenuData.getAnnouncements();
 
   // Creates a new field per announcement
@@ -105,13 +115,6 @@ async function handleListCommand(client, interaction) {
   await interaction.reply({ embeds: [embed] });
 }
 
-// Announcement data structure
-const AnnouncementPrototype = {
-  name: "",
-  date: "",
-  description: "",
-  link: "",
-}
 async function handleSetCommand(client, interaction) {
   // Creates an initial reply 
   await interaction.reply("Loading...")
@@ -119,11 +122,11 @@ async function handleSetCommand(client, interaction) {
 
   await interaction.editReply("Requesting data...")
   // Gets all the required portions of data
-  let fullJson = ""
+  let fullJson = {}
+  let announcements = {}
   let sha = ""
-  let announcements = ""
   try {
-    mainMenuData = await MainMenuData.getMainMenuData()
+    const mainMenuData = await MainMenuData.getMainMenuData()
 
     sha = mainMenuData.sha
     fullJson = mainMenuData.json
@@ -134,7 +137,7 @@ async function handleSetCommand(client, interaction) {
     interaction.followUp(`Error getting GitHub API data:\n\n||\`\`${JSON.stringify(error)}\`\`||`)
     return
   }
-  
+
   // Gets the parameters
   const parameters = interaction.options
 
@@ -154,47 +157,29 @@ async function handleSetCommand(client, interaction) {
     interaction.followUp(`Error Updating file: Invalid Index (${index})`)
     return
   }
-  
+
   // Updates the json to have annoucnements
   fullJson.announcements = announcements
 
 
   await interaction.editReply("Sending new announcement...")
 
-  // Creates a new octokit request with the new json
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/main_menu.json';
-
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  })
-  
-
-  await octokit.request(`PUT /repos/${owner}/${repo}/contents/${path}`, {
-    owner: owner,
-    repo: repo,
-    path: path,
-    message: `Added announcement at index ${parameters.get("index").value}(${parameters.get("title").value})`, // Commit title
-    committer: { // Commit information
-      name: `Su386's Bot (@${interaction.member.user.tag} through discord)`,
-      email: `153068057+Su286@users.noreply.github.com`
-    },
-    content:  Buffer.from(JSON.stringify(fullJson, null, 4)).toString("base64"), // Converts the json to base64
-    sha: sha,
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
+  await SystemUtils.sendRequest("data/main_menu.json",
+    `Added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})`,
+    interaction.member.user.tag,
+    fullJson,
+    sha
+  ).then(response => {
+    console.log(response)
+    const [data, error] = response; // destructuring response array
+    if (error) {
+      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+      console.error('Error making GitHub API request:', error);
+      return
     }
+
+    interaction.editReply(`[Sucessfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!`)
   })
-  .then(response => {
-    // Handle the response object
-    interaction.editReply(`[Sucessfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${response.data.commit?.html_url})!`)
-  })
-  .catch(error => {
-    // Handle errors
-    interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-    console.error('Error making GitHub API request:', error);
-  });
 }
 
 
@@ -202,14 +187,14 @@ async function handleSetCommand(client, interaction) {
 async function handleRemoveCommand(client, interaction) {
   // Creates an initial reply 
   await interaction.reply("Loading...")
-  
+
   // Gets necessary data
   await interaction.editReply("Requesting data...")
-  let fullJson = ""
+  let fullJson = {}
+  let announcements = {}
   let sha = ""
-  let announcements = ""
   try {
-    mainMenuData = await MainMenuData.getMainMenuData()
+    const mainMenuData = await MainMenuData.getMainMenuData()
 
     sha = mainMenuData.sha
     fullJson = mainMenuData.json
@@ -221,7 +206,7 @@ async function handleRemoveCommand(client, interaction) {
     interaction.followUp(`Error getting GitHub API data:\n\n||\`\`${JSON.stringify(error)}\`\`||`)
     return
   }
-  
+
   // Gets the parameters object
   const parameters = interaction.options
 
@@ -237,46 +222,25 @@ async function handleRemoveCommand(client, interaction) {
     interaction.followUp(`Error Updating file: Invalid Index (${index})`)
     return
   }
-  
+
   // Updates fullJson
   fullJson.announcements = announcements
 
   await interaction.editReply("Sending data...")
 
-  // Creates a request to send to github
-  const config = require("../../config/config.json")
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/main_menu.json';
-  
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  })
-  
-
-  await octokit.request(`PUT /repos/${owner}/${repo}/contents/${path}`, {
-    owner: owner,
-    repo: repo,
-    path: path,
-    message: `Removed 1 announcement at index ${parameters.get("index").value} (${titleToRemove})`, // Commit title
-    committer: { // Commit info
-      name: `Su386's Bot (@${interaction.member.user.tag} through discord)`,
-      email: `153068057+Su286@users.noreply.github.com`
-    },
-    content:  Buffer.from(JSON.stringify(fullJson, null, 4)).toString("base64"), // Commit content
-    sha: sha,
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
+  await SystemUtils.sendRequest("data/main_menu.json",
+    `Removed 1 announcement at index ${parameters.get("index").value} (${titleToRemove})`,
+    interaction.member.user.tag,
+    fullJson,
+    sha
+  ).then(async response => {
+    const [data, error] = response; // destructuring response array
+    if (error) {
+      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+      console.error('Error making GitHub API request:', error);
+      return
     }
-  })
-  .then(response => {
-    // Handle the response object
-    interaction.editReply(`[Sucessfully removed 1 announcement at index ${parameters.get("index").value} (${titleToRemove})](${response.data.commit?.html_url})!`)
-  })
-  .catch(error => {
-    // Handle errors
-    console.error('Error making GitHub API request:', error);
-    interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-  });
 
+    interaction.editReply(`[Sucessfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!`)
+  })
 }

@@ -4,8 +4,9 @@
 //
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const Utils = require("../utils/StringUtils");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const Utils = require("../utils/StringUtils");
+const config = require("../config/config.json");
 
 const commands = [];
 const embeds = [];
@@ -28,7 +29,7 @@ module.exports = {
                 title: "Help",
                 description: "Here are the commands.",
                 fields: [],
-                color: 0x00ff00,
+                color: parseInt(config.color.slice(1), 16),
                 timestamp: new Date(),
                 footer: {
                     text: `Page ${i + 1} of ${pages}`
@@ -38,7 +39,6 @@ module.exports = {
             for (let j = 0; j < amountPerPage; j++) {
                 const command = commands[i * amountPerPage + j];
                 if (command) {
-                    console.log(command);
                     embed.fields.push({
                         name: Utils.capitalizeFirstLetter(command.name),
                         value: 
