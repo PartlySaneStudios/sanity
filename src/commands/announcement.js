@@ -18,10 +18,10 @@ const AnnouncementPrototype = {
 }
 
 const subcommands = {
-  list: { name: "list", function: handleListCommand },
-  add: { name: "add", function: handleSetCommand },
-  remove: { name: "remove", function: handleRemoveCommand },
-  autoadd: { name: "autoadd", function: handleAutoAdd },
+  list: { name: "list", function: handleListCommand, permission: false },
+  add: { name: "add", function: handleSetCommand, permission: true },
+  remove: { name: "remove", function: handleRemoveCommand, permission: true },
+  autoadd: { name: "autoadd", function: handleAutoAdd, permission: true },
 }
 
 module.exports = {
@@ -109,6 +109,11 @@ module.exports = {
     const subcommandObject = subcommands[subcommand]
 
     if (subcommandObject) {
+      // Checks for permission
+      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) {
+        await interaction.reply(`You do not have permission to use this command!`)
+        return
+      }
       await subcommandObject.function(client, interaction)
     }
   }

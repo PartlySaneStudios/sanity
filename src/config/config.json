@@ -7,5 +7,10 @@
     "data": {
         "user": "j10a1n15",
         "repo": "partly-sane-skies-public-data"
-    }
+    },
+    "allowedAnnouncementUsers": [
+
+        "283738275552821248",
+        "766070817351139379"
+    ]
 }
