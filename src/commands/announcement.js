@@ -4,7 +4,7 @@
 //
 
 
-const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const MainMenuData = require("../data/main_menu.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json");
@@ -15,6 +15,13 @@ const AnnouncementPrototype = {
   date: "",
   description: "",
   link: "",
+}
+
+const subcommands = {
+  list: { name: "list", function: handleListCommand },
+  add: { name: "add", function: handleSetCommand },
+  remove: { name: "remove", function: handleRemoveCommand },
+  autoadd: { name: "autoadd", function: handleAutoAdd },
 }
 
 module.exports = {
@@ -70,22 +77,39 @@ module.exports = {
           .setRequired(true)
           .setDescription("The link of the new annoncement")
       )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName("autoadd")
+        .setDescription("Adds announcement from URL, shifts positions. Former 1 becomes 2. (First = 1)")
+        .addIntegerOption(option =>
+          option
+            .setName("index")
+            .setRequired(true)
+            .setDescription("The index to add a new item (first = 1)")
+        )
+        .addStringOption(option =>
+          option
+            .setName("url")
+            .setRequired(true)
+            .setDescription("The URL of the new announcement")
+        )
+        .addStringOption(option =>
+          option
+            .setName("date")
+            .setRequired(true)
+            .setDescription("The date of the new annoncement")
+        )
     ),
 
   async run(client, interaction) {
     // Gets the subcommand
     const subcommand = interaction.options.getSubcommand();
 
-    if (subcommand === "list") { // Handles list subcommand
-      await handleListCommand(client, interaction);
-    }
+    const subcommandObject = subcommands[subcommand]
 
-    if (subcommand === "add") { // Handles add subcommand
-      await handleSetCommand(client, interaction)
-    }
-
-    if (subcommand === "remove") { // Handles remove subcommand
-      await handleRemoveCommand(client, interaction)
+    if (subcommandObject) {
+      await subcommandObject.function(client, interaction)
     }
   }
 }
@@ -244,4 +268,103 @@ async function handleRemoveCommand(client, interaction) {
 
     interaction.editReply(`[Sucessfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!`)
   })
+}
+
+async function handleAutoAdd(client, interaction) {
+  // Creates an initial reply 
+  await interaction.reply("Loading...")
+
+  // Gets necessary data
+  await interaction.editReply("Requesting data...")
+  let fullJson = {}
+  let announcements = {}
+  let sha = ""
+  try {
+    const mainMenuData = await MainMenuData.getMainMenuData()
+
+    sha = mainMenuData.sha
+    fullJson = mainMenuData.json
+    announcements = fullJson.announcements
+  } catch (error) {
+    console.error('Error getting GitHub API data:', error);
+    interaction.followUp(`Error getting GitHub API data:\n\n||\`\`${JSON.stringify(error)}\`\`||`)
+    return
+  }
+
+  // Gets the parameters object
+  const parameters = interaction.options
+  await SystemUtils.getUrlContent(parameters.get("url").value)
+    .then((htmlCode) => {
+      if (htmlCode !== null) {
+        let newAnnouncement = Object.create(AnnouncementPrototype)
+
+        newAnnouncement.name = SystemUtils.getElementFromHtml(htmlCode, "h1.p-title-value")
+        newAnnouncement.date = interaction.options.get("date").value
+        newAnnouncement.description = SystemUtils.getElementFromHtml(htmlCode, "div.bbWrapper").split("\n").slice(0, 2).join(" ")
+        newAnnouncement.link = parameters.get("url").value
+
+        // Checks for valid index
+        index = parameters.get("index").value - 1
+        if (index >= 0 && index < announcements.length) {
+          announcements.splice(index, 0, newAnnouncement)
+        } else {
+          interaction.followUp(`Error Updating file: Invalid Index (${index})`)
+          return
+        }
+
+        const embed = new EmbedBuilder()
+          .setColor(config.color)
+          .setTitle("New Announcement:")
+          .setDescription("Does this look right?\n\nIf so, click the checkmark below to confirm, otherwise, click the X to cancel.")
+          .setURL(`https://github.com/${config.data.user}/${config.data.repo}/blob/main/data/main_menu.json`)
+          .addFields({ name: `${index + 1}: `, value: `Title: \`\`\`${newAnnouncement.name}\`\`\`\nDate: \`\`\`${newAnnouncement.date}\`\`\`\nDescription: \`\`\`${newAnnouncement.description}\`\`\`\n[Link:](${newAnnouncement.link}) \`\`\`${newAnnouncement.link}\`\`\`` })
+
+        const row = new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setCustomId('confirm')
+              .setLabel('Confirm')
+              .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+              .setCustomId('cancel')
+              .setLabel('Cancel')
+              .setStyle(ButtonStyle.Danger),
+          );
+
+        interaction.editReply({ embeds: [embed], components: [row] }).then(async response => {
+          const collectorFilter = i => i.user.id === interaction.user.id;
+
+          const collector = response.createMessageComponentCollector({ filter: collectorFilter, time: 60000 });
+
+          collector.on("collect", async i => {
+            if (i.customId === "confirm") {
+              await i.update({ embeds: [embed], components: [] })
+              // Updates the json to have annoucnements
+              fullJson.announcements = announcements
+
+              SystemUtils.sendRequest("data/main_menu.json",
+                `Added announcement at index ${parameters.get("index").value} (${newAnnouncement.name})`,
+                interaction.member.user.tag,
+                fullJson,
+                sha
+              ).then(response => {
+                const [data, error] = response; // destructuring response array
+                if (error) {
+                  interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+                  console.error('Error making GitHub API request:', error);
+                  return
+                }
+
+                interaction.editReply(`[Sucessfully added announcement at index ${parameters.get("index").value} (${newAnnouncement.name})](${data.data.commit?.html_url})!`)
+              })
+              collector.stop("confirm")
+
+            } else if (i.customId === "cancel") {
+              await i.update({ embeds: [], components: [], content: "Cancelled" })
+              collector.stop("cancel")
+            }
+          })
+        })
+      }
+    })
 }

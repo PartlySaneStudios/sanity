@@ -5,9 +5,39 @@
 
 
 const { Octokit } = require('@octokit/rest');
+const { JSDOM } = require('jsdom');
 const config = require("../config/config.json");
 
-exports.sendRequest = sendRequest
+async function getUrlContent(url) {
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch website. Status: ${response.status}`);
+        }
+
+        const htmlCode = await response.text();
+        return htmlCode;
+    } catch (error) {
+        console.error(`Error fetching website: ${error.message}`);
+        return null;
+    }
+}
+
+function getElementFromHtml(htmlCode, className) {
+    const dom = new JSDOM(htmlCode);
+    const document = dom.window.document;
+  
+    // Find the title element using its class name
+    const titleElement = document.querySelector(className);
+  
+    if (titleElement) {
+      // Extract and return the text content of the title element
+      return titleElement.textContent.trim();
+    } else {
+      return null; // Title element not found
+    }
+}
 
 async function sendRequest(path, commitName, commitAuthor, content, sha) {
     // Creates a request to send to github
@@ -42,3 +72,7 @@ async function sendRequest(path, commitName, commitAuthor, content, sha) {
             return [null, error];
         });
 }
+
+exports.sendRequest = sendRequest
+exports.getUrlContent = getUrlContent
+exports.getElementFromHtml = getElementFromHtml

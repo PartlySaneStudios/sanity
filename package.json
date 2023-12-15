@@ -20,6 +20,7 @@
     "@octokit/rest": "^20.0.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
+    "jsdom": "^23.0.1",
     "octokit": "^3.1.2"
   }
 }
