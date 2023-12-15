@@ -110,10 +110,9 @@ module.exports = {
 
     if (subcommandObject) {
       // Checks for permission
-      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) {
-        await interaction.reply(`You do not have permission to use this command!`)
-        return
-      }
+      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) return interaction.reply(`You do not have permission to use this command!`)
+      
+      // Runs the subcommand
       await subcommandObject.function(client, interaction)
     }
   }
