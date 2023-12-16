@@ -79,13 +79,15 @@ module.exports = {
   }
 }
 
-const ModPrototype = {
-  name: "",
-  download: "",
-  versions: {}
-}
+
 
 async function handleAddCommand(client, interaction) {
+  const ModPrototype = {
+    name: "",
+    download: "",
+    versions: {}
+  }
+  
   // Creates an initial reply 
   await interaction.reply("Loading...")
 
@@ -113,7 +115,7 @@ async function handleAddCommand(client, interaction) {
   const mcModInfoJson = await JSON.parse(mcModInfoTxt)[0]
 
   await interaction.editReply("Organizing data...")
-  let mod = Object.create(ModPrototype)
+  let mod = {...ModPrototype}
 
   mod.name = mcModInfoJson.name
   mod.download = parameters.get("websitelink").value
@@ -135,6 +137,12 @@ async function handleAddCommand(client, interaction) {
 }
 
 async function handleUpdateCommand(client, interaction) {
+  const ModPrototype = {
+    name: "",
+    download: "",
+    versions: {}
+  }
+
   // Creates an initial reply 
   await interaction.reply("Loading...")
 

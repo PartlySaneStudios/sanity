@@ -10,12 +10,7 @@ const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json");
 
 // Announcement data structure
-const AnnouncementPrototype = {
-  name: "",
-  date: "",
-  description: "",
-  link: "",
-}
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -117,6 +112,13 @@ async function handleListCommand(client, interaction) {
 }
 
 async function handleSetCommand(client, interaction) {
+  const AnnouncementPrototype = {
+    name: "",
+    date: "",
+    description: "",
+    link: "",
+  }
+  
   // Creates an initial reply 
   await interaction.reply("Loading...")
 
@@ -144,7 +146,7 @@ async function handleSetCommand(client, interaction) {
 
   await interaction.editReply("Creating new announcment...")
   // Creates a new annoucenment with the new parameters
-  let newAnnouncement = Object.create(AnnouncementPrototype)
+  let newAnnouncement = {...AnnouncementPrototype}
   newAnnouncement.name = parameters.get("title").value
   newAnnouncement.date = parameters.get("date").value
   newAnnouncement.description = parameters.get("description").value
