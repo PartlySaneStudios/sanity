@@ -58,17 +58,17 @@ module.exports = {
       .addStringOption(option => option
           .setName("date")
           .setRequired(true)
-          .setDescription("The date of the new annoncement")
+          .setDescription("The date of the new announcement")
       )
       .addStringOption(option => option
           .setName("description")
           .setRequired(true)
-          .setDescription("The description of the new annoncement")
+          .setDescription("The description of the new announcement")
       )
       .addStringOption(option => option
           .setName("link")
           .setRequired(true)
-          .setDescription("The link of the new annoncement")
+          .setDescription("The link of the new announcement")
       )
     )
     .addSubcommand(subcommand => subcommand
@@ -87,7 +87,7 @@ module.exports = {
         .addStringOption(option => option
             .setName("date")
             .setRequired(true)
-            .setDescription("The date of the new annoncement")
+            .setDescription("The date of the new announcement")
         )
     ),
 
@@ -160,8 +160,8 @@ async function handleSetCommand(client, interaction) {
   // Gets the parameters
   const parameters = interaction.options
 
-  await interaction.editReply("Creating new announcment...")
-  // Creates a new annoucenment with the new parameters
+  await interaction.editReply("Creating new announcement...")
+  // Creates a new announcement with the new parameters
   let newAnnouncement = Object.create(AnnouncementPrototype)
   newAnnouncement.name = parameters.get("title").value
   newAnnouncement.date = parameters.get("date").value
@@ -177,7 +177,7 @@ async function handleSetCommand(client, interaction) {
     return
   }
 
-  // Updates the json to have annoucnements
+  // Updates the json to have announcements
   fullJson.announcements = announcements
 
 
@@ -196,7 +196,7 @@ async function handleSetCommand(client, interaction) {
       return
     }
 
-    interaction.editReply(`[Sucessfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!`)
+    interaction.editReply(`[Successfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!`)
   })
 }
 
@@ -259,7 +259,7 @@ async function handleRemoveCommand(client, interaction) {
       return
     }
 
-    interaction.editReply(`[Sucessfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!`)
+    interaction.editReply(`[Successfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!`)
   })
 }
 
@@ -332,7 +332,7 @@ async function handleAutoAdd(client, interaction) {
           collector.on("collect", async i => {
             if (i.customId === "confirm") {
               await i.update({ embeds: [embed], components: [] })
-              // Updates the json to have annoucnements
+              // Updates the json to have announcements
               fullJson.announcements = announcements
 
               SystemUtils.sendRequest("data/main_menu.json",
@@ -348,7 +348,7 @@ async function handleAutoAdd(client, interaction) {
                   return
                 }
 
-                interaction.editReply(`[Sucessfully added announcement at index ${parameters.get("index").value} (${newAnnouncement.name})](${data.data.commit?.html_url})!`)
+                interaction.editReply(`[Successfully added announcement at index ${parameters.get("index").value} (${newAnnouncement.name})](${data.data.commit?.html_url})!`)
               })
               collector.stop("confirm")
 
