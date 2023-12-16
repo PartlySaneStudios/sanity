@@ -1,5 +1,5 @@
 //
-// Written by Su386'and J10a1n15.
+// Written by Su386 and J10a1n15.
 // See LICENSE for copyright and license notices.
 //
 
@@ -10,12 +10,7 @@ const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json");
 
 // Announcement data structure
-const AnnouncementPrototype = {
-  name: "",
-  date: "",
-  description: "",
-  link: "",
-}
+
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
@@ -135,6 +130,13 @@ async function handleListCommand(client, interaction) {
 }
 
 async function handleSetCommand(client, interaction) {
+  const AnnouncementPrototype = {
+    name: "",
+    date: "",
+    description: "",
+    link: "",
+  }
+  
   // Creates an initial reply 
   await interaction.reply("Loading...")
 
@@ -160,9 +162,9 @@ async function handleSetCommand(client, interaction) {
   // Gets the parameters
   const parameters = interaction.options
 
-  await interaction.editReply("Creating new announcement...")
-  // Creates a new announcement with the new parameters
-  let newAnnouncement = Object.create(AnnouncementPrototype)
+  await interaction.editReply("Creating new announcment...")
+  // Creates a new annoucenment with the new parameters
+  let newAnnouncement = {...AnnouncementPrototype}
   newAnnouncement.name = parameters.get("title").value
   newAnnouncement.date = parameters.get("date").value
   newAnnouncement.description = parameters.get("description").value
