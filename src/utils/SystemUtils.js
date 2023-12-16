@@ -6,8 +6,11 @@
 
 const { Octokit } = require('@octokit/rest');
 const config = require("../config/config.json");
+const crypto = require('crypto');
 
 exports.sendRequest = sendRequest
+exports.downloadFileInMemory = downloadFileToMemory
+exports.calculateSHA256 = calculateSHA256
 
 async function sendRequest(path, commitName, commitAuthor, content, sha) {
     // Creates a request to send to github
@@ -41,4 +44,34 @@ async function sendRequest(path, commitName, commitAuthor, content, sha) {
         .catch(error => {
             return [null, error];
         });
+}
+
+async function downloadFileToMemory(url) {
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Failed to download file from ${url}. Status: ${response.status} ${response.statusText}`);
+        }
+
+        const fileBuffer = Buffer.from(await response.arrayBuffer());
+
+        return fileBuffer;
+    } catch (error) {
+        throw new Error(`Error downloading file from ${url}: ${error.message}`);
+    }
+}
+
+async function calculateSHA256(fileData) {
+    // Convert the file data (Blob) to an Uint8Array
+    const dataUint8Array = await new Response(fileData).arrayBuffer();
+
+    // Calculate the SHA-256 hash
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dataUint8Array);
+
+    // Convert the hash to a hexadecimal string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+    return hashHex;
 }
