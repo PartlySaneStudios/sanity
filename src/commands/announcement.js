@@ -28,17 +28,14 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("announcement")
     .setDescription("Announcement commands")
-    .addSubcommand(subcommand => // Creates list subcommand
-      subcommand
-        .setName("list")
+    .addSubcommand(subcommand => subcommand
+        .setName("list") // Creates list subcommand
         .setDescription("List all announcements")
     )
-    .addSubcommand(subcommand =>
-      subcommand
+    .addSubcommand(subcommand => subcommand
         .setName("remove") // Creates remove subcommand
         .setDescription("List removes an announcement at a given position in the list. (First = 1)")
-        .addIntegerOption(option =>
-          option
+        .addIntegerOption(option => option
             .setName("index")
             .setRequired(true)
             .setDescription("The index to add a new item (first = 1)")
@@ -53,49 +50,41 @@ module.exports = {
           .setRequired(true)
           .setDescription("The index to add a new item (first = 1)")
       )
-      .addStringOption(option =>
-        option
+      .addStringOption(option => option
           .setName("title")
           .setRequired(true)
           .setDescription("The title of the new announcement")
       )
-      .addStringOption(option =>
-        option
+      .addStringOption(option => option
           .setName("date")
           .setRequired(true)
           .setDescription("The date of the new annoncement")
       )
-      .addStringOption(option =>
-        option
+      .addStringOption(option => option
           .setName("description")
           .setRequired(true)
           .setDescription("The description of the new annoncement")
       )
-      .addStringOption(option =>
-        option
+      .addStringOption(option => option
           .setName("link")
           .setRequired(true)
           .setDescription("The link of the new annoncement")
       )
     )
-    .addSubcommand(subcommand =>
-      subcommand
+    .addSubcommand(subcommand => subcommand
         .setName("autoadd")
         .setDescription("Adds announcement from URL, shifts positions. Former 1 becomes 2. (First = 1)")
-        .addIntegerOption(option =>
-          option
+        .addIntegerOption(option => option
             .setName("index")
             .setRequired(true)
             .setDescription("The index to add a new item (first = 1)")
         )
-        .addStringOption(option =>
-          option
+        .addStringOption(option => option
             .setName("url")
             .setRequired(true)
             .setDescription("The URL of the new announcement")
         )
-        .addStringOption(option =>
-          option
+        .addStringOption(option => option
             .setName("date")
             .setRequired(true)
             .setDescription("The date of the new annoncement")
@@ -110,7 +99,8 @@ module.exports = {
 
     if (subcommandObject) {
       // Checks for permission
-      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) return interaction.reply(`You do not have permission to use this command!`)
+      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) 
+        return interaction.reply(`You do not have permission to use this command!`)
       
       // Runs the subcommand
       await subcommandObject.function(client, interaction)
@@ -130,7 +120,7 @@ async function handleListCommand(client, interaction) {
 
   // Creates a new field per announcement
   for (let i = 1; i <= announcements.length; i++) {
-    let announcement = announcements[i - 1];
+    const announcement = announcements[i - 1];
     let field = ""
     field += `Title: \`\`\`${announcement.name}\`\`\`\n`
     field += `Date: \`\`\`${announcement.date}\`\`\`\n`
@@ -148,8 +138,8 @@ async function handleSetCommand(client, interaction) {
   // Creates an initial reply 
   await interaction.reply("Loading...")
 
-
   await interaction.editReply("Requesting data...")
+
   // Gets all the required portions of data
   let fullJson = {}
   let announcements = {}
@@ -179,7 +169,7 @@ async function handleSetCommand(client, interaction) {
   newAnnouncement.link = parameters.get("link").value
 
   // Checks for valid index
-  index = parameters.get("index").value - 1
+  const index = parameters.get("index").value - 1
   if (index >= 0 && index < announcements.length) {
     announcements.splice(index, 0, newAnnouncement)
   } else {
@@ -199,7 +189,6 @@ async function handleSetCommand(client, interaction) {
     fullJson,
     sha
   ).then(response => {
-    console.log(response)
     const [data, error] = response; // destructuring response array
     if (error) {
       interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
@@ -300,20 +289,20 @@ async function handleAutoAdd(client, interaction) {
   await SystemUtils.getUrlContent(parameters.get("url").value)
     .then((htmlCode) => {
       if (htmlCode !== null) {
-        let newAnnouncement = Object.create(AnnouncementPrototype)
+        const newAnnouncement = Object.create(AnnouncementPrototype)
 
         newAnnouncement.name = SystemUtils.getElementFromHtml(htmlCode, "h1.p-title-value")
-        newAnnouncement.date = interaction.options.get("date").value
+        newAnnouncement.date = parameters.get("date").value
         newAnnouncement.description = SystemUtils.getElementFromHtml(htmlCode, "div.bbWrapper").split("\n").slice(0, 2).join(" ")
         newAnnouncement.link = parameters.get("url").value
 
         // Checks for valid index
         index = parameters.get("index").value - 1
         if (index >= 0 && index < announcements.length) {
-          announcements.splice(index, 0, newAnnouncement)
+          announcements.splice(index, 0, newAnnouncement);
         } else {
-          interaction.followUp(`Error Updating file: Invalid Index (${index})`)
-          return
+          interaction.followUp(`Error Updating file: Invalid Index (${index})`);
+          return;
         }
 
         const embed = new EmbedBuilder()
