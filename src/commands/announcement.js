@@ -113,7 +113,7 @@ async function handleListCommand(client, interaction) {
   const embed = new EmbedBuilder()
     .setColor(config.color)
     .setTitle("Announcements:")
-    .setURL(`https://github.com/${config.data.user}/${config.data.repo}/blob/main/data/main_menu.json`)
+    .setURL(`https://github.com/${process.env.USER}/${process.env.REPO}/blob/main/data/main_menu.json`)
 
   // Get's announcement data
   const announcements = await MainMenuData.getAnnouncements();
@@ -309,7 +309,7 @@ async function handleAutoAdd(client, interaction) {
           .setColor(config.color)
           .setTitle("New Announcement:")
           .setDescription("Does this look right?\n\nIf so, click the checkmark below to confirm, otherwise, click the X to cancel.")
-          .setURL(`https://github.com/${config.data.user}/${config.data.repo}/blob/main/data/main_menu.json`)
+          .setURL(`https://github.com/${process.env.USER}/${process.env.REPO}/blob/main/data/main_menu.json`)
           .addFields({ name: `${index + 1}: `, value: `Title: \`\`\`${newAnnouncement.name}\`\`\`\nDate: \`\`\`${newAnnouncement.date}\`\`\`\nDescription: \`\`\`${newAnnouncement.description}\`\`\`\n[Link:](${newAnnouncement.link}) \`\`\`${newAnnouncement.link}\`\`\`` })
 
         const row = new ActionRowBuilder()

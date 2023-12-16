@@ -41,8 +41,8 @@ function getElementFromHtml(htmlCode, className) {
 
 async function sendRequest(path, commitName, commitAuthor, content, sha) {
     // Creates a request to send to github
-    const owner = config.data.user;
-    const repo = config.data.repo;
+    const owner = process.env.USER;
+    const repo = process.env.REPO;
 
     const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN
