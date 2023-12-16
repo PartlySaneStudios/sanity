@@ -6,14 +6,15 @@
 
 const { Octokit } = require('@octokit/rest');
 
+const owner = process.env.USER;
+const repo = process.env.REPO;
+const path = 'data/main_menu.json';
+
 // Returns an object with json and sha keys
 exports.getMainMenuData = async function getMainMenuData() {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
   });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/main_menu.json';
 
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -53,9 +54,6 @@ exports.getMainMenuJson = async function getData() {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
   });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/main_menu.json';
 
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -88,9 +86,6 @@ exports.getSHA = async function getSHA() {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
   });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/main_menu.json';
 
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
