@@ -26,14 +26,14 @@ Additionally, for working with the Github API in `announcement.js`, you'll need 
 4. In your .env file, add a new line "GITHUB_TOKEN=your_token," replacing "your_token" with the copied token (without quotation marks).
 
 Finally, add two more lines to your .env file:
-- "USER=j10a1n15" (replace with your desired GitHub username)
+- "OWNER=j10a1n15" (replace with your desired GitHub username)
 - "REPO=partly-sane-skies-public-data" (replace with the name of your GitHub repository)
 
 Now your .env file should look like this:
 ```env
 TOKEN=your_bot_token
 GITHUB_TOKEN=your_github_token
-USER=your_user_name
+OWNER=your_user_name
 REPO=your_repo
 ```
 
