@@ -241,7 +241,6 @@ async function handleListCommand(client, interaction) {
     }
   }
 
-
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
 
   for (let i = 0; i < pages; i++) {
