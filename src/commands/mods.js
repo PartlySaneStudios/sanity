@@ -273,10 +273,11 @@ async function handleListCommand(client, interaction) {
   let currentPage = 0;
   const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
+  const modsAmount = Object.keys(mods).length
   for (let i = 0; i < pages; i++) {
     const embed = new EmbedBuilder()
       .setColor(config.color)
-      .setTitle("Mods:")
+      .setTitle(`Mods: (${modsAmount})`)
       .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/mods.json`)
       .setFooter({ text: `Page ${i + 1} of ${pages}` });
 
