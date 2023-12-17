@@ -10,6 +10,7 @@ const fs = require("fs");
 module.exports = async (client) => {
     client.commands = new Collection();
     require("./onCommandExec")(client);
+    require("./onAutoComplete")(client);
 
     /* 
      * Load commands
