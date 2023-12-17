@@ -162,8 +162,8 @@ async function handleSetCommand(client, interaction) {
   // Gets the parameters
   const parameters = interaction.options
 
-  await interaction.editReply("Creating new announcment...")
-  // Creates a new annoucenment with the new parameters
+  await interaction.editReply("Creating new announcement...")
+  // Creates a new announcement with the new parameters
   let newAnnouncement = {...AnnouncementPrototype}
   newAnnouncement.name = parameters.get("title").value
   newAnnouncement.date = parameters.get("date").value
