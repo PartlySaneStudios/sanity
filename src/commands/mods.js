@@ -91,7 +91,16 @@ module.exports = {
         return interaction.reply(`You do not have permission to use this command!`)
 
       // Runs the subcommand
-      await subcommandObject.function(client, interaction)
+      try {
+        await subcommandObject.function(client, interaction)
+      } catch {
+        try {
+          interaction.followUp("Failed to run command!")
+
+        } catch {
+          interaction.reply("Failed to run command!")
+        }
+      }
     }
   }
 }
@@ -138,9 +147,13 @@ async function handleAddCommand(client, interaction) {
 
   const version = mcModInfoJson.version
   const id = mcModInfoJson.modid
-  const modVersions = mod.versions
+  let modVersions = {}
+  try {
+    modVersions = modsDataJson[id].versions
+  } catch {
+    modVersions = mod.versions
+  }
   modVersions[version] = hash
-  mod.versions = modVersions
 
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
