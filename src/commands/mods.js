@@ -11,13 +11,14 @@ const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json")
 
 const embeds = [];
-const amountPerPage = 5;
+const amountPerPage = 25;
 let currentPage = 0;
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
   add: { name: "add", function: handleAddCommand, permission: true },
   update: { name: "update", function: handleUpdateCommand, permission: true },
+  search: { name: "search", function: handleSearchCommand, permission: false },
 }
 
 module.exports = {
@@ -27,11 +28,6 @@ module.exports = {
     .addSubcommand(subcommand => subcommand
       .setName("list")// Creates list subcommand
       .setDescription("List all mods")
-      .addStringOption(option => option
-        .setName("search")
-        .setDescription("Search for a mod by name")
-        .setAutocomplete(true)
-      )
     )
     .addSubcommand(subcommand => subcommand
       .setName("add") // Creates remove subcommand
@@ -56,6 +52,16 @@ module.exports = {
           .setRequired(true)
           .setDescription("The download link for mod update")
       )
+    )
+    .addSubcommand(subcommand => subcommand
+      .setName("search") // Creates search subcommand
+      .setDescription("Search for a mod by name")
+      .addStringOption(option => option
+        .setName("search")
+        .setDescription("Search for a mod by name")
+        .setRequired(true)
+        .setAutocomplete(true)
+      ),
     ),
   async autocomplete(client, interaction) {
     const focusedValue = interaction.options.getFocused();
@@ -68,7 +74,7 @@ module.exports = {
       if (mod?.name?.toLowerCase().includes(focusedValue.toLowerCase())) {
         results.push({
           name: mod.name,
-          value: modKey,
+          value: mod.name,
         });
       }
     }
@@ -78,7 +84,7 @@ module.exports = {
 
     await interaction.respond(results);
   },
-  
+
   async run(client, interaction) {
     // Gets the subcommand
     const subcommand = interaction.options.getSubcommand();
@@ -136,7 +142,7 @@ async function handleAddCommand(client, interaction) {
 
 
   await interaction.editReply("Extracting File...")
-  const mcModInfoTxt = await extractTextFileFromJar(file, "mcmod.info")
+  const mcModInfoTxt = await SystemUtils.extractTextFileFromJar(file, "mcmod.info")
   const mcModInfoJson = await JSON.parse(mcModInfoTxt)[0]
 
   await interaction.editReply("Organizing data...")
@@ -195,7 +201,7 @@ async function handleUpdateCommand(client, interaction) {
 
 
   await interaction.editReply("Extracting File...")
-  const mcModInfoTxt = await extractTextFileFromJar(file, "mcmod.info")
+  const mcModInfoTxt = await SystemUtils.extractTextFileFromJar(file, "mcmod.info")
   const mcModInfoJson = await JSON.parse(mcModInfoTxt)[0]
 
   await interaction.editReply("Organizing data...")
@@ -204,7 +210,7 @@ async function handleUpdateCommand(client, interaction) {
   mod.name = mcModInfoJson.name
 
   const version = mcModInfoJson.version
-  const id = mcModInfoJson.modid 
+  const id = mcModInfoJson.modid
   let modVersions = {}
   try {
     modVersions = modsDataJson[id].versions
@@ -227,19 +233,7 @@ async function handleUpdateCommand(client, interaction) {
   await interaction.editReply(`Successfully updated ${id} to version ${version}!`)
 }
 
-
-function extractTextFileFromJar(jarBuffer, textFileName) {
-  return JSZip.loadAsync(jarBuffer)
-    .then(zip => {
-      if (zip.files[textFileName]) {
-        return zip.files[textFileName].async('string');
-      } else {
-        throw new Error(`Text file '${textFileName}' not found in the JAR.`);
-      }
-    });
-}
-
-async function handleListCommand(client, interaction) {
+async function handleSearchCommand(client, interaction) {
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
 
@@ -248,38 +242,56 @@ async function handleListCommand(client, interaction) {
   if (focusedValue) {
     for (const modKey in mods) {
       const mod = mods[modKey];
-      if (!mod?.name?.toLowerCase().includes(focusedValue.toLowerCase())) {
+      if (!mod.name == focusedValue) {
         delete mods[modKey];
       }
     }
   }
 
+  const mod = mods[Object.keys(mods)[0]];
+  let field = ""
+
+  console.log(mod)
+  console.log(mod.versions)
+
+  for (const version in mod.versions) {
+    field += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+  }
+
+  const embed = new EmbedBuilder()
+    .setColor(config.color)
+    .setTitle("Mod - " + mod.name)
+    .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
+    .addFields({ name: "Versions", value: field });
+
+  interaction.reply({ embeds: [embed] });
+}
+
+async function handleListCommand(client, interaction) {
+  const modsData = await ModsData.getModsData();
+  const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
+  const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
   for (let i = 0; i < pages; i++) {
     const embed = new EmbedBuilder()
       .setColor(config.color)
       .setTitle("Mods:")
       .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/mods.json`)
-      .setFooter({text: `Page ${i + 1} of ${pages}`});
+      .setFooter({ text: `Page ${i + 1} of ${pages}` });
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
     const modsSubset = Object.keys(mods).slice(startIndex, endIndex);
 
+    let desc = "";
     for (const modKey of modsSubset) {
       const mod = mods[modKey];
-      let field = "";
-      field += `Key: \`\`\`${modKey}\`\`\`\n`;
-      field += `[Download:](${mod.download}) \`\`\`${mod.download}\`\`\``;
-
-      for (const version in mod.versions) {
-        field += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
-      }
-
-      embed.addFields({ name: `**__${mod.name}:__** `, value: field });
+      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
     }
+    desc += `Click here for search: </mods search:${searchCommandGuild}>`
 
+    embed.setDescription(desc);
     embeds.push(embed);
   }
 
