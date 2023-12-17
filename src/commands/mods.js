@@ -284,7 +284,7 @@ async function handleListCommand(client, interaction) {
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
-    const keys = Object.keys(mods).sort(function (a, b) {
+    let keys = Object.keys(mods).sort(function (a, b) {
       var nameA = a.toLowerCase();
       var nameB = b.toLowerCase();
       if (nameA < nameB) {
@@ -295,6 +295,13 @@ async function handleListCommand(client, interaction) {
       }
       return 0;
     });
+    
+    keys = keys.filter(function (item) {
+      return item !== "partlysaneskies" || item !== "Forge";
+    });
+
+    keys = ["Forge", "partlysaneskies", ...keys]
+
     const modsSubset = keys.slice(startIndex, endIndex);
 
     let desc = "";
