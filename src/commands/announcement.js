@@ -100,12 +100,12 @@ module.exports = {
       // Runs the subcommand
       try {
         await subcommandObject.function(client, interaction)
-      } catch {
+      } catch(e) {
+        console.error(e)
         try {
-          interaction.followUp("Failed to run command!")
-
+          await interaction.followUp("Failed to run command!")
         } catch {
-          interaction.reply("Failed to run command!")
+          
         }
       }
     }

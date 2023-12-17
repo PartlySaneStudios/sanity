@@ -99,6 +99,11 @@ module.exports = {
         await subcommandObject.function(client, interaction)
       } catch (e) {
         console.error(e)
+        try {
+          await interaction.followUp("Failed to run command!")
+        } catch {
+
+        }
       }
     }
   }
