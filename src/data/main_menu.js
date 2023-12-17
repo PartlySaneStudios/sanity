@@ -10,7 +10,7 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 });
 
-const owner = process.env.USER;
+const owner = process.env.OWNER;
 const repo = process.env.REPO;
 const path = 'data/main_menu.json';
 

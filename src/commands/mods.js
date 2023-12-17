@@ -207,7 +207,7 @@ async function handleListCommand(client, interaction) {
     const embed = new EmbedBuilder()
       .setColor(config.color)
       .setTitle("Mods:")
-      .setURL(`https://github.com/${process.env.USER}/${process.env.REPO}/blob/main/data/mods.json`)
+      .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/mods.json`)
       .setFooter({text: `Page ${i + 1} of ${pages}`});
 
     const startIndex = i * amountPerPage;
