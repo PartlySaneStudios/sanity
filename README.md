@@ -7,7 +7,7 @@ After installing, clone this repo.
 In the folder of this repo, run "npm install" in the command prompt to install the given dependencies.
 It will take a bit, after it's done, run "node ." or "node .\main.js" to start the bot
 
-## Setting Up the Bot
+## Setting Up the .env
 Currently, the .env file needs 4 elements: TOKEN, GITHUB_TOKEN, USER & REPO
 
 To obtain the Bot Token, follow these steps:
