@@ -176,7 +176,12 @@ async function handleUpdateCommand(client, interaction) {
 
   const version = mcModInfoJson.version
   const id = mcModInfoJson.modid 
-  const modVersions = mod.versions
+  let modVersions = {}
+  try {
+    modVersions = modsDataJson[id].versions
+  } catch {
+    modVersions = mod.versions
+  }
   modVersions[version] = hash
 
   mod.download = modsDataJson[id].download
