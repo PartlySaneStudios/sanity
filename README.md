@@ -4,8 +4,8 @@ A discord bot to help assist with Partly Sane Skies
 ## How to use
 Install a [NodeJS Version newer than 16.11.0](https://nodejs.org/en), using the LTS of 20.10.0 is best.
 After installing, clone this repo.
-In the folder of this repo, run "npm install" in the command prompt to install the given dependencies.
-It will take a bit, after it's done, run "node ." or "node .\main.js" to start the bot
+In the folder of this repo, run `npm start` in the command prompt to install the given dependencies.
+It will take a bit, after it's done, it will automatically run `node main.js` to start the bot
 
 ## Setting Up the .env
 Currently, the .env file needs 4 elements: TOKEN, GITHUB_TOKEN, USER & REPO
@@ -23,7 +23,7 @@ Additionally, for working with the Github API in `announcement.js`, you'll need 
 1. Open [Developer Settings](https://github.com/settings/tokens).
 2. Click on "Tokens (classic)" and generate a new token with the repo scope.
 3. Copy the generated token.
-4. In your .env file, add a new line "GITHUB_TOKEN=your_token," replacing "your_token" with the copied token (without quotation marks).
+4. In your .env file, add a new line "GITHUB_TOKEN=your_token", replacing "your_token" with the copied token (without quotation marks).
 
 Finally, add two more lines to your .env file:
 - "OWNER=j10a1n15" (replace with your desired GitHub username)

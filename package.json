@@ -4,7 +4,8 @@
   "description": "A discord bot to help assist with Partly Sane Skies",
   "main": "main.js",
   "scripts": {
-    "main": "node main.js"
+    "main": "node main.js",
+    "start": "npm install && node main.js"
   },
   "repository": {
     "type": "git",
