@@ -258,6 +258,7 @@ async function handleListCommand(client, interaction) {
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
+  const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
   for (let i = 0; i < pages; i++) {
     const embed = new EmbedBuilder()
@@ -269,12 +270,14 @@ async function handleListCommand(client, interaction) {
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
     const modsSubset = Object.keys(mods).slice(startIndex, endIndex);
-    let desc = "";
 
+    let desc = "";
     for (const modKey of modsSubset) {
       const mod = mods[modKey];
-      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
     }
+    desc += `Click here for search: </mods search:${searchCommandGuild}>`
+
     embed.setDescription(desc);
     embeds.push(embed);
   }
