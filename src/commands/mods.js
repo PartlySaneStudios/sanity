@@ -5,7 +5,6 @@
 
 
 const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const JSZip = require('jszip');
 const ModsData = require("../data/mods.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json")

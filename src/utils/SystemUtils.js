@@ -8,6 +8,7 @@ const { Octokit } = require('@octokit/rest');
 const { JSDOM } = require('jsdom');
 const config = require("../config/config.json");
 const crypto = require('crypto');
+const JSZip = require("jszip")
 
 
 exports.sendRequest = sendRequest
