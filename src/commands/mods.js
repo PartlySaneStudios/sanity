@@ -338,8 +338,10 @@ async function handleListCommand(client, interaction) {
 
       if (currentPage == 0) {
         row.components[0].setDisabled(true);
+        row.components[1].setDisabled(false);
       } else if (currentPage == pages - 1) {
         row.components[0].setDisabled(false);
+        row.components[1].setDisabled(true);
       } else {
         row.components[0].setDisabled(false);
         row.components[1].setDisabled(false);
