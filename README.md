@@ -2,7 +2,7 @@
 A discord bot to help assist with Partly Sane Skies
 
 ## How to use
-Install a [NodeJS Version newer than 16.11.0](https://nodejs.org/en), using the LTS of 10.10.0 is best.
+Install a [NodeJS Version newer than 16.11.0](https://nodejs.org/en), using the LTS of 20.10.0 is best.
 After installing, clone this repo.
 In the folder of this repo, run "npm install" in the command prompt to install the given dependencies.
 It will take a bit, after it's done, run "node ." or "node .\main.js" to start the bot
