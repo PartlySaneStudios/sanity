@@ -284,9 +284,9 @@ async function handleListCommand(client, interaction) {
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
-    const keys = Object.keys(mods).sort(function(a, b) {
-      var nameA = a.name.toLowerCase();
-      var nameB = b.name.toLowerCase();
+    const keys = Object.keys(mods).sort(function (a, b) {
+      var nameA = a.toLowerCase();
+      var nameB = b.toLowerCase();
       if (nameA < nameB) {
         return -1;
       }
