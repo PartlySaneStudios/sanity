@@ -6,15 +6,16 @@
 
 const { Octokit } = require('@octokit/rest');
 
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN
+});
+
+const owner = process.env.USER;
+const repo = process.env.REPO;
+const path = 'data/mods.json';
+
 // Returns an object with json and sha keys
 exports.getModsData = async function getModsData() {
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/mods.json';
-
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: owner,
@@ -41,16 +42,8 @@ exports.getModsData = async function getModsData() {
     throw error; // Re-throw the error to signal that something went wrong
   }
 }
-const config = require("../config/config.json")
 
 exports.getModsJson = async function getData() {
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/mods.json';
-
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: owner,
@@ -79,13 +72,6 @@ exports.getModsJson = async function getData() {
 
 
 exports.getSHA = async function getSHA() {
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-  });
-  const owner = config.data.user;
-  const repo = config.data.repo;
-  const path = 'data/mods.json';
-
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: owner,
