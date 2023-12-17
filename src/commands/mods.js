@@ -12,7 +12,6 @@ const config = require("../config/config.json")
 
 const embeds = [];
 const amountPerPage = 25;
-let currentPage = 0;
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
@@ -74,7 +73,7 @@ module.exports = {
       if (mod?.name?.toLowerCase().includes(focusedValue.toLowerCase())) {
         results.push({
           name: mod.name,
-          value: mod.name,
+          value: modKey,
         });
       }
     }
@@ -99,13 +98,8 @@ module.exports = {
       // Runs the subcommand
       try {
         await subcommandObject.function(client, interaction)
-      } catch {
-        try {
-          interaction.followUp("Failed to run command!")
-
-        } catch {
-          interaction.reply("Failed to run command!")
-        }
+      } catch (e) {
+        console.error(e)
       }
     }
   }
@@ -238,22 +232,23 @@ async function handleSearchCommand(client, interaction) {
   const mods = modsData.json.mods;
 
   // if autocomplete has data, edit mods to only include that data
-  const focusedValue = interaction.options.get("search")?.value;
-  if (focusedValue) {
+  const autocompleteValue = interaction.options.getString("search");
+  if (autocompleteValue) {
     for (const modKey in mods) {
-      const mod = mods[modKey];
-      if (!mod.name == focusedValue) {
+      if (!modKey.toLowerCase().includes(autocompleteValue.toLowerCase())) {
         delete mods[modKey];
       }
     }
   }
 
+  // if no mods are found, return
+  if (Object.keys(mods).length == 0) {
+    return interaction.reply("No mods found!");
+  }
+
   const mod = mods[Object.keys(mods)[0]];
-  let field = ""
 
-  console.log(mod)
-  console.log(mod.versions)
-
+  let field = "";
   for (const version in mod.versions) {
     field += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
   }
@@ -271,6 +266,7 @@ async function handleListCommand(client, interaction) {
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
+  let currentPage = 0;
   const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
   for (let i = 0; i < pages; i++) {

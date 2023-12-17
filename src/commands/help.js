@@ -12,7 +12,6 @@ const config = require("../config/config.json");
 const commands = [];
 const embeds = [];
 const amountPerPage = 10; 
-let currentPage = 0;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -23,6 +22,7 @@ module.exports = {
             commands.push(command[1].data.toJSON());
         }
 
+        let currentPage = 0;
         const pages = Math.ceil(commands.length / amountPerPage);
 
         for (let i = 0; i < pages; i++) {
