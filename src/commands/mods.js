@@ -27,6 +27,11 @@ module.exports = {
     .addSubcommand(subcommand => subcommand
       .setName("list")// Creates list subcommand
       .setDescription("List all mods")
+      .addStringOption(option => option
+        .setName("search")
+        .setDescription("Search for a mod by name")
+        .setAutocomplete(true)
+      )
     )
     .addSubcommand(subcommand => subcommand
       .setName("add") // Creates remove subcommand
@@ -52,7 +57,28 @@ module.exports = {
           .setDescription("The download link for mod update")
       )
     ),
+  async autocomplete(client, interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const modsData = await ModsData.getModsData();
+    const mods = modsData.json.mods;
 
+    const results = [];
+    for (const modKey in mods) {
+      const mod = mods[modKey];
+      if (mod?.name?.toLowerCase().includes(focusedValue.toLowerCase())) {
+        results.push({
+          name: mod.name,
+          value: modKey,
+        });
+      }
+    }
+
+    // remove elements after 25
+    results.splice(25);
+
+    await interaction.respond(results);
+  },
+  
   async run(client, interaction) {
     // Gets the subcommand
     const subcommand = interaction.options.getSubcommand();
@@ -189,8 +215,6 @@ async function handleUpdateCommand(client, interaction) {
 }
 
 
-
-
 function extractTextFileFromJar(jarBuffer, textFileName) {
   return JSZip.loadAsync(jarBuffer)
     .then(zip => {
@@ -205,6 +229,18 @@ function extractTextFileFromJar(jarBuffer, textFileName) {
 async function handleListCommand(client, interaction) {
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
+
+  // if autocomplete has data, edit mods to only include that data
+  const focusedValue = interaction.options.get("search")?.value;
+  if (focusedValue) {
+    for (const modKey in mods) {
+      const mod = mods[modKey];
+      if (!mod?.name?.toLowerCase().includes(focusedValue.toLowerCase())) {
+        delete mods[modKey];
+      }
+    }
+  }
+
 
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
 
