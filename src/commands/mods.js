@@ -9,8 +9,6 @@ const ModsData = require("../data/mods.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json")
 
-const embeds = [];
-const amountPerPage = 25;
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
@@ -266,7 +264,10 @@ async function handleSearchCommand(client, interaction) {
   interaction.reply({ embeds: [embed] });
 }
 
+const amountPerPage = 25;
 async function handleListCommand(client, interaction) {
+  const embeds = [];
+
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
@@ -283,7 +284,8 @@ async function handleListCommand(client, interaction) {
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
-    const modsSubset = Object.keys(mods).slice(startIndex, endIndex);
+    const keys = Object.keys(mods).sort();
+    const modsSubset = keys.slice(startIndex, endIndex);
 
     let desc = "";
     for (const modKey of modsSubset) {
