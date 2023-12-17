@@ -15,6 +15,7 @@ exports.downloadFileInMemory = downloadFileToMemory
 exports.calculateSHA256 = calculateSHA256
 exports.getUrlContent = getUrlContent
 exports.getElementFromHtml = getElementFromHtml
+exports.extractTextFileFromJar = extractTextFileFromJar
 
 async function getUrlContent(url) {
     try {
@@ -112,3 +113,14 @@ async function calculateSHA256(fileData) {
 
     return hashHex;
 }
+
+function extractTextFileFromJar(jarBuffer, textFileName) {
+    return JSZip.loadAsync(jarBuffer)
+      .then(zip => {
+        if (zip.files[textFileName]) {
+          return zip.files[textFileName].async('string');
+        } else {
+          throw new Error(`Text file '${textFileName}' not found in the JAR.`);
+        }
+      });
+  }
