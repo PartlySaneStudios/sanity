@@ -239,7 +239,7 @@ async function handleUpdateCommand(client, interaction) {
   mod.download = modsDataJson[id].download
 
   mod.versions = modVersions
-  mod.betaModVersions = betaModVersions
+  mod.betaVersions = betaModVersions
 
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
@@ -343,16 +343,22 @@ async function handleSearchCommand(client, interaction) {
 
   const mod = mods[Object.keys(mods)[0]];
 
-  let field = "";
+  let versionsField = "";
   for (const version in mod.versions) {
-    field += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+    versionsField += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+  }
+
+  let betaVersionsField = "";
+  for (const version in mod.betaVersions) {
+    betaVersionsField += `\n${version}: \`\`\`${mod.betaVersions[version]}\`\`\``;
   }
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
-    .addFields({ name: "Versions", value: field });
+    .addFields({ name: "Versions", value: versionsField })
+    .addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
@@ -400,7 +406,7 @@ async function handleListCommand(client, interaction) {
     let desc = "";
     for (const modKey of modsSubset) {
       const mod = mods[modKey];
-      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}, ${Object.keys(mod.betaVersions).length} known beta version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
     }
     desc += `Click here for search: </mods search:${searchCommandGuild}>`
 
