@@ -9,15 +9,15 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const Utils = require("../utils/StringUtils");
 const config = require("../config/config.json");
 
-const commands = [];
-const embeds = [];
-const amountPerPage = 10; 
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("help")
         .setDescription("Shows the help menu."),
     async run(client, interaction) {
+        const commands = [];
+        const embeds = [];
+        const amountPerPage = 10; 
+        
         for (const command of client.commands) {
             commands.push(command[1].data.toJSON());
         }

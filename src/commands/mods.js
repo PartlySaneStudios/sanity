@@ -9,13 +9,12 @@ const ModsData = require("../data/mods.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json")
 
-const embeds = [];
-const amountPerPage = 25;
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
   add: { name: "add", function: handleAddCommand, permission: true },
   update: { name: "update", function: handleUpdateCommand, permission: true },
+  bupdate: { name: "update", function: handleBetaUpdateCommand, permission: true},
   search: { name: "search", function: handleSearchCommand, permission: false },
 }
 
@@ -29,7 +28,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("add") // Creates remove subcommand
-      .setDescription("List removes an announcement at a given position in the list. (First = 1)")
+      .setDescription("Adds a mod to the update channel")
       .addStringOption(option => option
         .setName("filelink")
         .setRequired(true)
@@ -43,7 +42,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("update") // Creates add subcommand
-      .setDescription("Adds announcement, shifts positions. Former 1 becomes 2. (First = 1)")
+      .setDescription("Updates a mod in the normal update channel")
       .addStringOption(option =>
         option
           .setName("filelink")
@@ -51,6 +50,16 @@ module.exports = {
           .setDescription("The download link for mod update")
       )
     )
+    .addSubcommand(subcommand => subcommand
+      .setName("bupdate")
+      .setDescription("Updates a mod in the beta update channel")
+      .addStringOption(option =>
+        option
+          .setName("filelink")
+          .setRequired(true)
+          .setDescription("The download link for mod update")
+      )
+      )
     .addSubcommand(subcommand => subcommand
       .setName("search") // Creates search subcommand
       .setDescription("Search for a mod by name")
@@ -114,7 +123,8 @@ async function handleAddCommand(client, interaction) {
   const ModPrototype = {
     name: "",
     download: "",
-    versions: {}
+    versions: {},
+    betaVersions: {}
   }
 
   // Creates an initial reply 
@@ -173,7 +183,8 @@ async function handleUpdateCommand(client, interaction) {
   const ModPrototype = {
     name: "",
     download: "",
-    versions: {}
+    versions: {},
+    betaVersions: {}
   }
 
   // Creates an initial reply 
@@ -217,9 +228,18 @@ async function handleUpdateCommand(client, interaction) {
   }
   modVersions[version] = hash
 
+  let betaModVersions = {}
+  try {
+    betaModVersions = modsDataJson[id].betaVersions
+  } catch {
+    modVersions = mod.betaVersions
+  }
+  betaModVersions[version] = hash
+
   mod.download = modsDataJson[id].download
 
   mod.versions = modVersions
+  mod.betaVersions = betaModVersions
 
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
@@ -229,6 +249,77 @@ async function handleUpdateCommand(client, interaction) {
   await SystemUtils.sendRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
 
   await interaction.editReply(`Successfully updated ${id} to version ${version}!`)
+}
+
+async function handleBetaUpdateCommand(client, interaction) {
+  const ModPrototype = {
+    name: "",
+    download: "",
+    versions: {},
+    betaVersions: {}
+  }
+
+  // Creates an initial reply 
+  await interaction.reply("Loading...")
+
+  // Gets the parameters object
+  const parameters = interaction.options
+
+  // Gets the mod file
+  await interaction.editReply("Downloading mod...")
+
+  const url = parameters.get("filelink").value
+  const file = await SystemUtils.downloadFileInMemory(url)
+
+  await interaction.editReply("Getting Mods Data")
+  const modsDataObject = await ModsData.getModsData()
+  const modsDataSha = modsDataObject.sha
+  const fullData = modsDataObject.json
+  const modsDataJson = fullData.mods
+
+  await interaction.editReply("Generating Hash...")
+  const hash = await SystemUtils.calculateSHA256(file)
+
+
+  await interaction.editReply("Extracting File...")
+  const mcModInfoTxt = await SystemUtils.extractTextFileFromJar(file, "mcmod.info")
+  const mcModInfoJson = await JSON.parse(mcModInfoTxt)[0]
+
+  await interaction.editReply("Organizing data...")
+  let mod = Object.create(ModPrototype)
+
+  mod.name = mcModInfoJson.name
+
+  const version = mcModInfoJson.version
+  const id = mcModInfoJson.modid
+  let modVersions = {}
+  try {
+    modVersions = modsDataJson[id].versions
+  } catch {
+    modVersions = mod.versions
+  }
+
+  let betaModVersions = {}
+  try {
+    betaModVersions = modsDataJson[id].betaVersions
+  } catch {
+    modVersions = mod.betaVersions
+  }
+  betaModVersions[version] = hash
+
+  mod.download = modsDataJson[id].download
+
+  mod.versions = modVersions
+  mod.betaModVersions = betaModVersions
+
+  await interaction.editReply("Editing Data")
+  modsDataJson[id] = mod
+  fullData.mods = modsDataJson
+
+  await interaction.editReply("Sending Data")
+  await SystemUtils.sendRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
+
+  await interaction.editReply(`Successfully updated ${id} to **beta** version ${version}!`)
 }
 
 async function handleSearchCommand(client, interaction) {
@@ -252,42 +343,70 @@ async function handleSearchCommand(client, interaction) {
 
   const mod = mods[Object.keys(mods)[0]];
 
-  let field = "";
+  let versionsField = "";
   for (const version in mod.versions) {
-    field += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+    versionsField += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+  }
+
+  let betaVersionsField = "";
+  for (const version in mod.betaVersions) {
+    betaVersionsField += `\n${version}: \`\`\`${mod.betaVersions[version]}\`\`\``;
   }
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
-    .addFields({ name: "Versions", value: field });
+    .addFields({ name: "Versions", value: versionsField })
+    .addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
 
+const amountPerPage = 25;
 async function handleListCommand(client, interaction) {
+  const embeds = [];
+
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
   let currentPage = 0;
   const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
+  const modsAmount = Object.keys(mods).length
   for (let i = 0; i < pages; i++) {
     const embed = new EmbedBuilder()
       .setColor(config.color)
-      .setTitle("Mods:")
+      .setTitle(`Mods: (${modsAmount} total)`)
       .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/mods.json`)
       .setFooter({ text: `Page ${i + 1} of ${pages}` });
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
-    const modsSubset = Object.keys(mods).slice(startIndex, endIndex);
+    let keys = Object.keys(mods).sort(function (a, b) {
+      var nameA = a.toLowerCase();
+      var nameB = b.toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+    
+    keys = keys.filter(function (item) {
+      return item !== "partlysaneskies" || item !== "Forge";
+    });
+
+    keys = ["Forge", "partlysaneskies", ...keys]
+
+    const modsSubset = keys.slice(startIndex, endIndex);
 
     let desc = "";
     for (const modKey of modsSubset) {
       const mod = mods[modKey];
-      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}, ${Object.keys(mod.betaVersions).length} known beta version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
     }
     desc += `Click here for search: </mods search:${searchCommandGuild}>`
 
@@ -325,8 +444,10 @@ async function handleListCommand(client, interaction) {
 
       if (currentPage == 0) {
         row.components[0].setDisabled(true);
+        row.components[1].setDisabled(false);
       } else if (currentPage == pages - 1) {
         row.components[0].setDisabled(false);
+        row.components[1].setDisabled(true);
       } else {
         row.components[0].setDisabled(false);
         row.components[1].setDisabled(false);
