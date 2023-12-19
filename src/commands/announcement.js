@@ -192,7 +192,7 @@ async function handleSetCommand(client, interaction) {
 
   await interaction.editReply("Sending new announcement...")
 
-  await SystemUtils.sendRequest("data/main_menu.json",
+  await SystemUtils.sendCommitRequest("data/main_menu.json",
     `Added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})`,
     interaction.member.user.tag,
     fullJson,
@@ -255,7 +255,7 @@ async function handleRemoveCommand(client, interaction) {
 
   await interaction.editReply("Sending data...")
 
-  await SystemUtils.sendRequest("data/main_menu.json",
+  await SystemUtils.sendCommitRequest("data/main_menu.json",
     `Removed 1 announcement at index ${parameters.get("index").value} (${titleToRemove})`,
     interaction.member.user.tag,
     fullJson,
@@ -344,7 +344,7 @@ async function handleAutoAdd(client, interaction) {
               // Updates the json to have announcements
               fullJson.announcements = announcements
 
-              SystemUtils.sendRequest("data/main_menu.json",
+              SystemUtils.sendCommitRequest("data/main_menu.json",
                 `Added announcement at index ${parameters.get("index").value} (${newAnnouncement.name})`,
                 interaction.member.user.tag,
                 fullJson,

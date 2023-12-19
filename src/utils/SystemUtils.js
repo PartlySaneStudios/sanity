@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const JSZip = require("jszip")
 
 
-exports.sendRequest = sendRequest
+exports.sendCommitRequest = sendCommitRequest
 exports.downloadFileInMemory = downloadFileToMemory
 exports.calculateSHA256 = calculateSHA256
 exports.getUrlContent = getUrlContent
@@ -50,7 +50,7 @@ function getElementFromHtml(htmlCode, className) {
 }
 
 
-async function sendRequest(path, commitName, commitAuthor, content, sha) {
+async function sendCommitRequest(path, commitName, commitAuthor, content, sha) {
     // Creates a request to send to github
     const owner = process.env.OWNER;
     const repo = process.env.REPO;
