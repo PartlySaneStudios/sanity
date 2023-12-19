@@ -14,7 +14,7 @@ const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
   add: { name: "add", function: handleAddCommand, permission: true },
   update: { name: "update", function: handleUpdateCommand, permission: true },
-  bupdate: { name: "update", function: handleBetaUpdateCommand, permission: true},
+  bupdate: { name: "bupdate", function: handleBetaUpdateCommand, permission: true},
   search: { name: "search", function: handleSearchCommand, permission: false },
 }
 
@@ -232,7 +232,7 @@ async function handleUpdateCommand(client, interaction) {
   try {
     betaModVersions = modsDataJson[id].betaVersions
   } catch {
-    modVersions = mod.betaVersions
+    betaModVersions = mod.betaVersions
   }
   betaModVersions[version] = hash
 
@@ -303,14 +303,14 @@ async function handleBetaUpdateCommand(client, interaction) {
   try {
     betaModVersions = modsDataJson[id].betaVersions
   } catch {
-    modVersions = mod.betaVersions
+    betaModVersions = mod.betaVersions
   }
   betaModVersions[version] = hash
 
   mod.download = modsDataJson[id].download
 
   mod.versions = modVersions
-  mod.betaModVersions = betaModVersions
+  mod.betaVersions = betaModVersions
 
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
@@ -406,7 +406,9 @@ async function handleListCommand(client, interaction) {
     let desc = "";
     for (const modKey of modsSubset) {
       const mod = mods[modKey];
-      desc += `- __${mod.name}__ (${modKey}): ${Object.keys(mod.versions).length} known version${Object.keys(mod.versions).length == 1 ? "" : "s"}, ${Object.keys(mod.betaVersions).length} known beta version${Object.keys(mod.versions).length == 1 ? "" : "s"}.\n`;
+      const numOfRegular = Object.keys(mod.versions).length
+      const numOfBetaOnly = Object.keys(mod.betaVersions).length - numOfRegular
+      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} known version${numOfRegular == 1 ? "" : "s"}${ numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${ numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
     }
     desc += `Click here for search: </mods search:${searchCommandGuild}>`
 
