@@ -8,7 +8,7 @@ In the folder of this repo, run `npm start` in the command prompt to install the
 It will take a bit, after it's done, it will automatically run `node main.js` to start the bot
 
 ## Setting Up the .env
-Currently, the .env file needs 4 elements: TOKEN, GITHUB_TOKEN, USER & REPO
+Currently, the .env file needs 4 elements: TOKEN, GITHUB_TOKEN, OWNER & REPO
 
 To obtain the Bot Token, follow these steps:
 1. Head to the [Developer Portal](https://discord.com/developers/applications).
