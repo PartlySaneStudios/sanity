@@ -14,7 +14,7 @@ const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
   add: { name: "add", function: handleAddCommand, permission: true },
   update: { name: "update", function: handleUpdateCommand, permission: true },
-  bupdate: { name: "update", function: handleBetaUpdateCommand, permission: true},
+  bupdate: { name: "update", function: handleBetaUpdateCommand, permission: true },
   search: { name: "search", function: handleSearchCommand, permission: false },
 }
 
@@ -59,7 +59,7 @@ module.exports = {
           .setRequired(true)
           .setDescription("The download link for mod update")
       )
-      )
+    )
     .addSubcommand(subcommand => subcommand
       .setName("search") // Creates search subcommand
       .setDescription("Search for a mod by name")
@@ -310,7 +310,7 @@ async function handleBetaUpdateCommand(client, interaction) {
   mod.download = modsDataJson[id].download
 
   mod.versions = modVersions
-  mod.betaModVersions = betaModVersions
+  mod.betaVersions = betaModVersions
 
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
@@ -394,7 +394,7 @@ async function handleListCommand(client, interaction) {
       }
       return 0;
     });
-    
+
     keys = keys.filter(function (item) {
       return item !== "partlysaneskies" || item !== "Forge";
     });
