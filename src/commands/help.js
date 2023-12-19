@@ -95,6 +95,10 @@ module.exports = {
 
                 await i.update({ embeds: [embeds[currentPage]], components: [row] });
             });
+
+            collector.on("end", async () => {
+                await response.edit({ components: [] });
+            });
         });
     }
 }
