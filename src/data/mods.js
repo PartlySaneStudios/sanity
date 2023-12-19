@@ -3,40 +3,15 @@
 // See LICENSE for copyright and license notices.
 //
 
-
-const { Octokit } = require('@octokit/rest');
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-});
+const SystemUtils = require('../utils/SystemUtils');
 
 const owner = process.env.OWNER;
 const repo = process.env.REPO;
 const path = 'data/mods.json';
 
-// Returns the raw data
-async function getData(){
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: owner,
-      repo: repo,
-      path: path,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
-    
-    return response.data;
-  }
-  catch (error) {
-    console.error('Error fetching or decoding file content:', error);
-    throw error; // Re-throw the error to signal that something went wrong
-  }
-}
-
 // Returns an object with json and sha keys
 exports.getModsData = async function getModsData() {
-  const data = await getData();
+  const data = await SystemUtils.getData(path, owner, repo);
 
   const sha = data.sha;
   
@@ -50,7 +25,7 @@ exports.getModsData = async function getModsData() {
 }
 
 exports.getModsJson = async function getData() {
-  const data = await getData();
+  const data = await SystemUtils.getData(path, owner, repo);
 
   // Decode the content from Base64 to UTF-8
   const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
@@ -63,7 +38,7 @@ exports.getModsJson = async function getData() {
 
 
 exports.getSHA = async function getSHA() {
-  getData().then(data => {
+  SystemUtils.getData(path, owner, repo).then(data => {
     return data.sha;
   });
 }
