@@ -3,6 +3,7 @@
 // See LICENSE for copyright and license notices.
 //
 
+
 const { ActivityType } = require("discord.js")
 const config = require("../config/config.json")
 

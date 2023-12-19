@@ -9,8 +9,6 @@ const MainMenuData = require("../data/main_menu.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json");
 
-// Announcement data structure
-
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
@@ -24,17 +22,17 @@ module.exports = {
     .setName("announcement")
     .setDescription("Announcement commands")
     .addSubcommand(subcommand => subcommand
-        .setName("list") // Creates list subcommand
-        .setDescription("List all announcements")
+      .setName("list") // Creates list subcommand
+      .setDescription("List all announcements")
     )
     .addSubcommand(subcommand => subcommand
-        .setName("remove") // Creates remove subcommand
-        .setDescription("List removes an announcement at a given position in the list. (First = 1)")
-        .addIntegerOption(option => option
-            .setName("index")
-            .setRequired(true)
-            .setDescription("The index to add a new item (first = 1)")
-        )
+      .setName("remove") // Creates remove subcommand
+      .setDescription("List removes an announcement at a given position in the list. (First = 1)")
+      .addIntegerOption(option => option
+        .setName("index")
+        .setRequired(true)
+        .setDescription("The index to add a new item (first = 1)")
+      )
     )
     .addSubcommand(subcommand => subcommand
       .setName("add") // Creates add subcommand
@@ -46,44 +44,44 @@ module.exports = {
           .setDescription("The index to add a new item (first = 1)")
       )
       .addStringOption(option => option
-          .setName("title")
-          .setRequired(true)
-          .setDescription("The title of the new announcement")
+        .setName("title")
+        .setRequired(true)
+        .setDescription("The title of the new announcement")
       )
       .addStringOption(option => option
-          .setName("date")
-          .setRequired(true)
-          .setDescription("The date of the new announcement")
+        .setName("date")
+        .setRequired(true)
+        .setDescription("The date of the new announcement")
       )
       .addStringOption(option => option
-          .setName("description")
-          .setRequired(true)
-          .setDescription("The description of the new announcement")
+        .setName("description")
+        .setRequired(true)
+        .setDescription("The description of the new announcement")
       )
       .addStringOption(option => option
-          .setName("link")
-          .setRequired(true)
-          .setDescription("The link of the new announcement")
+        .setName("link")
+        .setRequired(true)
+        .setDescription("The link of the new announcement")
       )
     )
     .addSubcommand(subcommand => subcommand
-        .setName("autoadd")
-        .setDescription("Adds announcement from URL, shifts positions. Former 1 becomes 2. (First = 1)")
-        .addIntegerOption(option => option
-            .setName("index")
-            .setRequired(true)
-            .setDescription("The index to add a new item (first = 1)")
-        )
-        .addStringOption(option => option
-            .setName("url")
-            .setRequired(true)
-            .setDescription("The URL of the new announcement")
-        )
-        .addStringOption(option => option
-            .setName("date")
-            .setRequired(true)
-            .setDescription("The date of the new announcement")
-        )
+      .setName("autoadd")
+      .setDescription("Adds announcement from URL, shifts positions. Former 1 becomes 2. (First = 1)")
+      .addIntegerOption(option => option
+        .setName("index")
+        .setRequired(true)
+        .setDescription("The index to add a new item (first = 1)")
+      )
+      .addStringOption(option => option
+        .setName("url")
+        .setRequired(true)
+        .setDescription("The URL of the new announcement")
+      )
+      .addStringOption(option => option
+        .setName("date")
+        .setRequired(true)
+        .setDescription("The date of the new announcement")
+      )
     ),
 
   async run(client, interaction) {
@@ -94,18 +92,18 @@ module.exports = {
 
     if (subcommandObject) {
       // Checks for permission
-      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id)) 
+      if (subcommandObject.permission && !config.allowedAnnouncementUsers.includes(interaction.member.id))
         return interaction.reply(`You do not have permission to use this command!`)
-      
+
       // Runs the subcommand
       try {
         await subcommandObject.function(client, interaction)
-      } catch(e) {
+      } catch (e) {
         console.error(e)
         try {
           await interaction.followUp("Failed to run command!")
         } catch {
-          
+          await interaction.reply("Failed to run command!")
         }
       }
     }
@@ -145,7 +143,7 @@ async function handleSetCommand(client, interaction) {
     description: "",
     link: "",
   }
-  
+
   // Creates an initial reply 
   await interaction.reply("Loading...")
 
@@ -173,7 +171,7 @@ async function handleSetCommand(client, interaction) {
 
   await interaction.editReply("Creating new announcement...")
   // Creates a new announcement with the new parameters
-  let newAnnouncement = {...AnnouncementPrototype}
+  let newAnnouncement = { ...AnnouncementPrototype }
   newAnnouncement.name = parameters.get("title").value
   newAnnouncement.date = parameters.get("date").value
   newAnnouncement.description = parameters.get("description").value
@@ -368,6 +366,10 @@ async function handleAutoAdd(client, interaction) {
               collector.stop("cancel")
             }
           })
+
+          collector.on("end", async (collected, reason) => {
+            await response.edit({ components: [] });
+          });
         })
       }
     })

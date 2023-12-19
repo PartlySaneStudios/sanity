@@ -14,7 +14,7 @@ const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
   add: { name: "add", function: handleAddCommand, permission: true },
   update: { name: "update", function: handleUpdateCommand, permission: true },
-  bupdate: { name: "bupdate", function: handleBetaUpdateCommand, permission: true},
+  bupdate: { name: "bupdate", function: handleBetaUpdateCommand, permission: true },
   search: { name: "search", function: handleSearchCommand, permission: false },
 }
 
@@ -59,7 +59,7 @@ module.exports = {
           .setRequired(true)
           .setDescription("The download link for mod update")
       )
-      )
+    )
     .addSubcommand(subcommand => subcommand
       .setName("search") // Creates search subcommand
       .setDescription("Search for a mod by name")
@@ -343,14 +343,18 @@ async function handleSearchCommand(client, interaction) {
 
   const mod = mods[Object.keys(mods)[0]];
 
+  // Get an array of non-beta versions
+  const nonBetaVersions = Object.keys(mod.versions);
+
   let versionsField = "";
-  for (const version in mod.versions) {
-    versionsField += `\n${version}: \`\`\`${mod.versions[version]}\`\`\``;
+  for (const [version, value] of Object.entries(mod.versions)) {
+    versionsField += `\n${version}: \`\`\`${value}\`\`\``;
   }
 
   let betaVersionsField = "";
-  for (const version in mod.betaVersions) {
-    betaVersionsField += `\n${version}: \`\`\`${mod.betaVersions[version]}\`\`\``;
+  for (const [version, value] of Object.entries(mod.betaVersions)) {
+    if (nonBetaVersions.includes(version)) continue;
+    betaVersionsField += `\n${version}: \`\`\`${value}\`\`\``;
   }
 
   const embed = new EmbedBuilder()
@@ -394,7 +398,7 @@ async function handleListCommand(client, interaction) {
       }
       return 0;
     });
-    
+
     keys = keys.filter(function (item) {
       return item !== "partlysaneskies" || item !== "Forge";
     });
@@ -408,7 +412,7 @@ async function handleListCommand(client, interaction) {
       const mod = mods[modKey];
       const numOfRegular = Object.keys(mod.versions).length
       const numOfBetaOnly = Object.keys(mod.betaVersions).length - numOfRegular
-      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} known version${numOfRegular == 1 ? "" : "s"}${ numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${ numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} known version${numOfRegular == 1 ? "" : "s"}${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
     }
     desc += `Click here for search: </mods search:${searchCommandGuild}>`
 
@@ -456,6 +460,10 @@ async function handleListCommand(client, interaction) {
       }
 
       await i.update({ embeds: [embeds[currentPage]], components: [row] });
+    });
+
+    collector.on("end", async () => {
+      await response.edit({ components: [] });
     });
   });
 }
