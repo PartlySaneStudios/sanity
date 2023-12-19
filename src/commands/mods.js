@@ -303,7 +303,7 @@ async function handleBetaUpdateCommand(client, interaction) {
   try {
     betaModVersions = modsDataJson[id].betaVersions
   } catch {
-    modVersions = mod.betaVersions
+    betaModVersions = mod.betaVersions
   }
   betaModVersions[version] = hash
 
