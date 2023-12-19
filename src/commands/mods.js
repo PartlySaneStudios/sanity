@@ -111,7 +111,7 @@ module.exports = {
         try {
           await interaction.followUp("Failed to run command!")
         } catch {
-
+          await interaction.reply("Failed to run command!")
         }
       }
     }
