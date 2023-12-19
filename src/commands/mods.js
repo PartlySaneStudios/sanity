@@ -9,8 +9,6 @@ const ModsData = require("../data/mods.js");
 const SystemUtils = require("../utils/SystemUtils.js");
 const config = require("../config/config.json")
 
-const embeds = [];
-const amountPerPage = 25;
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },
@@ -266,23 +264,45 @@ async function handleSearchCommand(client, interaction) {
   interaction.reply({ embeds: [embed] });
 }
 
+const amountPerPage = 25;
 async function handleListCommand(client, interaction) {
+  const embeds = [];
+
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
   const pages = Math.ceil(Object.keys(mods).length / amountPerPage);
   let currentPage = 0;
   const searchCommandGuild = await interaction.guild.commands.fetch().then(commands => commands.find(cmd => cmd.name == "mods").id);
 
+  const modsAmount = Object.keys(mods).length
   for (let i = 0; i < pages; i++) {
     const embed = new EmbedBuilder()
       .setColor(config.color)
-      .setTitle("Mods:")
+      .setTitle(`Mods: (${modsAmount} total)`)
       .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/mods.json`)
       .setFooter({ text: `Page ${i + 1} of ${pages}` });
 
     const startIndex = i * amountPerPage;
     const endIndex = startIndex + amountPerPage;
-    const modsSubset = Object.keys(mods).slice(startIndex, endIndex);
+    let keys = Object.keys(mods).sort(function (a, b) {
+      var nameA = a.toLowerCase();
+      var nameB = b.toLowerCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+    
+    keys = keys.filter(function (item) {
+      return item !== "partlysaneskies" || item !== "Forge";
+    });
+
+    keys = ["Forge", "partlysaneskies", ...keys]
+
+    const modsSubset = keys.slice(startIndex, endIndex);
 
     let desc = "";
     for (const modKey of modsSubset) {
@@ -325,8 +345,10 @@ async function handleListCommand(client, interaction) {
 
       if (currentPage == 0) {
         row.components[0].setDisabled(true);
+        row.components[1].setDisabled(false);
       } else if (currentPage == pages - 1) {
         row.components[0].setDisabled(false);
+        row.components[1].setDisabled(true);
       } else {
         row.components[0].setDisabled(false);
         row.components[1].setDisabled(false);
