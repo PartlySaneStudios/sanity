@@ -362,7 +362,8 @@ async function handleSearchCommand(client, interaction) {
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
     .addFields({ name: "Versions", value: versionsField })
-    .addFields({ name: "Beta Versions", value: betaVersionsField });
+    if (betaVersionsField) 
+      embed.addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
