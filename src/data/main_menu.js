@@ -39,9 +39,7 @@ exports.getMainMenuJson = async function getData() {
   const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
   // Parse the JSON string to a JavaScript object
-  const jsonData = JSON.parse(decodedContent);
-
-  return jsonData;
+  return JSON.parse(decodedContent);
 };
 
 
