@@ -10,13 +10,43 @@ const config = require("../config/config.json");
 const crypto = require('crypto');
 const JSZip = require("jszip")
 
+const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN
+});
 
-exports.sendRequest = sendRequest
+
+exports.sendCommitRequest = sendCommitRequest
 exports.downloadFileInMemory = downloadFileToMemory
 exports.calculateSHA256 = calculateSHA256
 exports.getUrlContent = getUrlContent
 exports.getElementFromHtml = getElementFromHtml
 exports.extractTextFileFromJar = extractTextFileFromJar
+exports.getData = getData
+
+/*
+* @param {string} path
+* @param {string} owner
+* @param {string} repo
+* @returns {object} {json, sha}
+*/
+async function getData(path, owner, repo){
+    try {
+        const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+            owner: owner,
+            repo: repo,
+            path: path,
+            headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+            });
+
+        return response.data;
+    }
+    catch (error) {
+        console.error('Error fetching or decoding file content:', error);
+        throw error; // Re-throw the error to signal that something went wrong
+    }
+}
 
 async function getUrlContent(url) {
     try {
@@ -50,15 +80,10 @@ function getElementFromHtml(htmlCode, className) {
 }
 
 
-async function sendRequest(path, commitName, commitAuthor, content, sha) {
+async function sendCommitRequest(path, commitName, commitAuthor, content, sha) {
     // Creates a request to send to github
     const owner = process.env.OWNER;
     const repo = process.env.REPO;
-
-    const octokit = new Octokit({
-        auth: process.env.GITHUB_TOKEN
-    });
-
 
     return octokit.request(`PUT /repos/${owner}/${repo}/contents/${path}`, {
         owner: owner,

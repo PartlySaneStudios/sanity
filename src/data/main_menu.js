@@ -4,11 +4,7 @@
 //
 
 
-const { Octokit } = require('@octokit/rest');
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-});
+const SystemUtils = require('../utils/SystemUtils');
 
 const owner = process.env.OWNER;
 const repo = process.env.REPO;
@@ -16,33 +12,20 @@ const path = 'data/main_menu.json';
 
 // Returns an object with json and sha keys
 exports.getMainMenuData = async function getMainMenuData() {
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: owner,
-      repo: repo,
-      path: path,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
-    const sha = response.data.sha;
-    
-    // Decode the content from Base64 to UTF-8
-    const decodedContent = Buffer.from(response.data.content, 'base64').toString('utf-8');
+  const data = await SystemUtils.getData(path, owner, repo);
 
-    // Parse the JSON string to a JavaScript object
-    const jsonData = JSON.parse(decodedContent);
-    console.log(jsonData)
+  const sha = data.sha;
 
-    return { json: jsonData, sha:sha }
-    // Extract the SHA value from the response
+  // Decode the content from Base64 to UTF-8
+  const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
-  }
-  catch (error) {
-    console.error('Error fetching or decoding file content:', error);
-    throw error; // Re-throw the error to signal that something went wrong
-  }
+  // Parse the JSON string to a JavaScript object
+  const jsonData = JSON.parse(decodedContent);
+  console.log(jsonData)
+
+  return { json: jsonData, sha: sha }
 }
+
 exports.getAnnouncements = async function getAnnouncements() {
   const response = await this.getMainMenuJson()
 
@@ -50,51 +33,19 @@ exports.getAnnouncements = async function getAnnouncements() {
 }
 
 exports.getMainMenuJson = async function getData() {
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: owner,
-      repo: repo,
-      path: path,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
+  const data = await SystemUtils.getData(path, owner, repo);
 
-    // Get the response as JSON
-    const data = response.data;
+  // Decode the content from Base64 to UTF-8
+  const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
-    // Decode the content from Base64 to UTF-8
-    const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
-
-    // Parse the JSON string to a JavaScript object
-    const jsonData = JSON.parse(decodedContent);
-
-    return jsonData;
-  } catch (error) {
-    console.error('Error fetching or decoding file content:', error);
-    throw error; // Re-throw the error to signal that something went wrong
-  }
+  // Parse the JSON string to a JavaScript object
+  return JSON.parse(decodedContent);
 };
 
 
 exports.getSHA = async function getSHA() {
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: owner,
-      repo: repo,
-      path: path,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    });
-    const data = response.data;
-    
-    
-    // Extract the SHA value from the response
-    return data.sha;
-  }
-  catch (error) {
-    console.error('Error fetching or decoding file content:', error);
-    throw error; // Re-throw the error to signal that something went wrong
-  }
+  const data = await SystemUtils.getData(path, owner, repo);
+
+  // Extract the SHA value from the response
+  return data.sha;
 }

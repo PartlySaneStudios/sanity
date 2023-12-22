@@ -111,7 +111,7 @@ module.exports = {
         try {
           await interaction.followUp("Failed to run command!")
         } catch {
-
+          await interaction.reply("Failed to run command!")
         }
       }
     }
@@ -174,7 +174,7 @@ async function handleAddCommand(client, interaction) {
   fullData.mods = modsDataJson
 
   await interaction.editReply("Sending Data")
-  await SystemUtils.sendRequest("data/mods.json", `Added ${id} to the mods list`, interaction.member.user.tag, fullData, modsDataSha)
+  await SystemUtils.sendCommitRequest("data/mods.json", `Added ${id} to the mods list`, interaction.member.user.tag, fullData, modsDataSha)
 
   await interaction.editReply(`Successfully added ${id} to the mods list!`)
 }
@@ -246,7 +246,7 @@ async function handleUpdateCommand(client, interaction) {
   fullData.mods = modsDataJson
 
   await interaction.editReply("Sending Data")
-  await SystemUtils.sendRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
+  await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
 
   await interaction.editReply(`Successfully updated ${id} to version ${version}!`)
 }
@@ -317,7 +317,7 @@ async function handleBetaUpdateCommand(client, interaction) {
   fullData.mods = modsDataJson
 
   await interaction.editReply("Sending Data")
-  await SystemUtils.sendRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
+  await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
 
   await interaction.editReply(`Successfully updated ${id} to **beta** version ${version}!`)
 }
@@ -362,7 +362,8 @@ async function handleSearchCommand(client, interaction) {
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
     .addFields({ name: "Versions", value: versionsField })
-    .addFields({ name: "Beta Versions", value: betaVersionsField });
+    if (betaVersionsField) 
+      embed.addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
