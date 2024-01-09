@@ -42,7 +42,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("update") // Creates add subcommand
-      .setDescription("Updates a mod in the normal update channel")
+      .setDescription("Updates a mod in the RELEASE update channel")
       .addStringOption(option =>
         option
           .setName("filelink")
@@ -52,7 +52,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("bupdate")
-      .setDescription("Updates a mod in the beta update channel")
+      .setDescription("Updates a mod in the BETA update channel")
       .addStringOption(option =>
         option
           .setName("filelink")
