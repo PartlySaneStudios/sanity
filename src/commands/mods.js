@@ -42,7 +42,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("update") // Creates add subcommand
-      .setDescription("Updates a mod in the normal update channel")
+      .setDescription("Updates a mod in the RELEASE update channel")
       .addStringOption(option =>
         option
           .setName("filelink")
@@ -52,7 +52,7 @@ module.exports = {
     )
     .addSubcommand(subcommand => subcommand
       .setName("bupdate")
-      .setDescription("Updates a mod in the beta update channel")
+      .setDescription("Updates a mod in the BETA update channel")
       .addStringOption(option =>
         option
           .setName("filelink")
@@ -247,8 +247,18 @@ async function handleUpdateCommand(client, interaction) {
 
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
+  .then(response => {
+    const [data, error] = response; // destructuring response array
+    if (error) {
+      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+      console.error('Error making GitHub API request:', error);
+      return
+    }
+    
+    interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!`)
 
-  await interaction.editReply(`Successfully updated ${id} to version ${version}!`)
+  })
+
 }
 
 async function handleBetaUpdateCommand(client, interaction) {
@@ -318,8 +328,16 @@ async function handleBetaUpdateCommand(client, interaction) {
 
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
-
-  await interaction.editReply(`Successfully updated ${id} to **beta** version ${version}!`)
+  .then(response => {
+    const [data, error] = response; // destructuring response array
+    if (error) {
+      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+      console.error('Error making GitHub API request:', error);
+      return
+    }
+    
+    interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!`)
+  })
 }
 
 async function handleSearchCommand(client, interaction) {
