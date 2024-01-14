@@ -169,6 +169,9 @@ async function handleAddCommand(client, interaction) {
   }
   modVersions[version] = hash
 
+  mod.versions = modVersions
+  mod.betaVersions = modVersions
+
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
   fullData.mods = modsDataJson
