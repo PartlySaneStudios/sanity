@@ -367,16 +367,14 @@ async function handleSearchCommand(client, interaction) {
   // Get an array of non-beta versions
   const nonBetaVersions = Object.keys(mod.versions);
 
-  let versionsField = "";
-  for (const [version, value] of Object.entries(mod.versions)) {
-    versionsField += `\n${version}: \`\`\`${value}\`\`\``;
-  }
+  let versionsField = getLastNEntries(Object.entries(mod.versions), 3);
 
-  let betaVersionsField = "";
-  for (const [version, value] of Object.entries(mod.betaVersions)) {
-    if (nonBetaVersions.includes(version)) continue;
-    betaVersionsField += `\n${version}: \`\`\`${value}\`\`\``;
-  }
+  let betaVersionsField = getLastNEntries(
+    Object.entries(mod.betaVersions).filter(
+      ([version]) => !nonBetaVersions.includes(version)
+    ),
+    3
+  );
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
@@ -387,6 +385,22 @@ async function handleSearchCommand(client, interaction) {
       embed.addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
+}
+
+function getLastNEntries(entries, n) {
+  const lastNEntries = [];
+  let count = 0;
+
+  for (const [version, value] of entries) {
+    if (count >= n) {
+      lastNEntries.shift(); // Remove the oldest entry if count exceeds n
+    }
+
+    lastNEntries.push(`\n${version}: \`\`\`${value}\`\`\``);
+    count++;
+  }
+
+  return lastNEntries.join('');
 }
 
 const amountPerPage = 25;
