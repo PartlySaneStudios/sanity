@@ -406,6 +406,7 @@ function getLastNEntries(entries, n) {
 const amountPerPage = 25;
 async function handleListCommand(client, interaction) {
   const embeds = [];
+  interaction.reply("Loading...")
 
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
@@ -448,9 +449,11 @@ async function handleListCommand(client, interaction) {
       const mod = mods[modKey];
       const numOfRegular = Object.keys(mod.versions).length
       const numOfBetaOnly = Object.keys(mod.betaVersions).length - numOfRegular
-      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} known version${numOfRegular == 1 ? "" : "s"}${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} ` 
+        + `known version${numOfRegular == 1 ? "" : "s"}` 
+        + `${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
     }
-    desc += `Click here for search: </mods search:${searchCommandGuild}>`
+    desc += `Click here to search: </mods search:${searchCommandGuild}>`
 
     embed.setDescription(desc);
     embeds.push(embed);
@@ -470,9 +473,9 @@ async function handleListCommand(client, interaction) {
     )
 
   if (pages == 1) {
-    return interaction.reply({ embeds: [embeds[0]] });
+    return interaction.editReply({ content: "", embeds: [embeds[0]] });
   }
-  await interaction.reply({ embeds: [embeds[currentPage]], components: [row] }).then(async response => {
+  await interaction.editReply({ content: "", embeds: [embeds[currentPage]], components: [row] }).then(async response => {
     const collectorFilter = i => i.user.id === interaction.user.id;
 
     const collector = response.createMessageComponentCollector({ filter: collectorFilter, time: 60000 });
