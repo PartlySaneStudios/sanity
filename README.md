@@ -19,11 +19,16 @@ To obtain the Bot Token, follow these steps:
 6. In the "Bot" Tab, scroll down to "Privileged Gateway Intents" and enable "Presence Intent," "Server Members Intent," & "Message Content Intent" for the bot to start.
 7. In your project, create a file named ".env," open it, and add the line "TOKEN=your_token," replacing "your_token" with your copied token (without quotation marks).
 
-Additionally, for working with the Github API in `announcement.js`, you'll need a GITHUB_TOKEN with repo access:
+Additionally, for working with the Github API in `announcement.js` as well as `mods.js`, you'll need a GITHUB_TOKEN with repo access:
 1. Open [Developer Settings](https://github.com/settings/tokens).
 2. Click on "Tokens (classic)" and generate a new token with the repo scope.
 3. Copy the generated token.
 4. In your .env file, add a new line "GITHUB_TOKEN=your_token", replacing "your_token" with the copied token (without quotation marks).
+
+Ensure your repository aligns with the specified structure outlined below:
+1. Implement a file named `mods.json` within the directory `/data/mods.json`. To ensure proper formatting, refer the example available [here](https://github.com/PartlySaneStudios/partly-sane-skies-public-data/blob/main/info.md#datamodsjson).
+
+2. Implement a file named `main_menu.json` within the directory `/data/main_menu.json`. To ensure proper formatting, refer the example available [here](https://github.com/PartlySaneStudios/partly-sane-skies-public-data/blob/main/info.md#datamain_menujson).
 
 Finally, add two more lines to your .env file:
 - "OWNER=j10a1n15" (replace with your desired GitHub username)
