@@ -16,6 +16,7 @@ const subcommands = {
   update: { name: "update", function: handleUpdateCommand, permission: true },
   bupdate: { name: "bupdate", function: handleBetaUpdateCommand, permission: true },
   search: { name: "search", function: handleSearchCommand, permission: false },
+  hash: { name: "hash", function: handleHashCommand, permission: false }
 }
 
 module.exports = {
@@ -66,6 +67,16 @@ module.exports = {
       .addStringOption(option => option
         .setName("search")
         .setDescription("Search for a mod by name")
+        .setRequired(true)
+        .setAutocomplete(true)
+      ),
+    )
+    .addSubcommand(subcommand => subcommand
+      .setName("hash") // Creates hash subcommand
+      .setDescription("Gets the hash and more of a mod")
+      .addStringOption(option => option
+        .setName("filelink")
+        .setDescription("The link to the file of the mod to get the hash of")
         .setRequired(true)
         .setAutocomplete(true)
       ),
@@ -505,4 +516,38 @@ async function handleListCommand(client, interaction) {
       await response.edit({ components: [] });
     });
   });
+}
+
+async function handleHashCommand(client, interaction) {
+  // Creates an initial reply 
+  await interaction.reply("Loading...")
+
+  // Gets the parameters object
+  const parameters = interaction.options
+
+  // Gets the mod file
+  await interaction.editReply("Downloading mod...")
+
+  const url = parameters.get("filelink").value
+  const file = await SystemUtils.downloadFileInMemory(url)
+
+  await interaction.editReply("Generating Hash...")
+  const hash = await SystemUtils.calculateSHA256(file)
+
+
+  await interaction.editReply("Extracting File...")
+  const mcModInfoTxt = await SystemUtils.extractTextFileFromJar(file, "mcmod.info")
+  const mcModInfoJson = await JSON.parse(mcModInfoTxt)[0]
+
+  await interaction.editReply("Organizing data...")
+
+  const embed = new EmbedBuilder()
+  .setColor(config.color)
+  .setTitle(`Mod: ${mcModInfoJson.name} `)
+  .setDescription(
+    `Modid: ${mcModInfoJson.modid}
+    Hash: \`\`\`${hash}\`\`\``
+  )
+
+  await interaction.editReply({content: "", embeds: [embed]})
 }
