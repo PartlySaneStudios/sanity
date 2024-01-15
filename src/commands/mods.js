@@ -369,7 +369,7 @@ async function handleSearchCommand(client, interaction) {
   const autocompleteValue = interaction.options.getString("search");
   if (autocompleteValue) {
     for (const modKey in mods) {
-      if (!modKey.toLowerCase().includes(autocompleteValue.toLowerCase())) {
+      if (modKey.toLowerCase() != autocompleteValue.toLowerCase()) {
         delete mods[modKey];
       }
     }
