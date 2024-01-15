@@ -169,6 +169,9 @@ async function handleAddCommand(client, interaction) {
   }
   modVersions[version] = hash
 
+  mod.versions = modVersions
+  mod.betaVersions = modVersions
+
   await interaction.editReply("Editing Data")
   modsDataJson[id] = mod
   fullData.mods = modsDataJson
@@ -364,16 +367,14 @@ async function handleSearchCommand(client, interaction) {
   // Get an array of non-beta versions
   const nonBetaVersions = Object.keys(mod.versions);
 
-  let versionsField = "";
-  for (const [version, value] of Object.entries(mod.versions)) {
-    versionsField += `\n${version}: \`\`\`${value}\`\`\``;
-  }
+  let versionsField = getLastNEntries(Object.entries(mod.versions), 3);
 
-  let betaVersionsField = "";
-  for (const [version, value] of Object.entries(mod.betaVersions)) {
-    if (nonBetaVersions.includes(version)) continue;
-    betaVersionsField += `\n${version}: \`\`\`${value}\`\`\``;
-  }
+  let betaVersionsField = getLastNEntries(
+    Object.entries(mod.betaVersions).filter(
+      ([version]) => !nonBetaVersions.includes(version)
+    ),
+    3
+  );
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
@@ -386,9 +387,26 @@ async function handleSearchCommand(client, interaction) {
   interaction.reply({ embeds: [embed] });
 }
 
+function getLastNEntries(entries, n) {
+  const lastNEntries = [];
+  let count = 0;
+
+  for (const [version, value] of entries) {
+    if (count >= n) {
+      lastNEntries.shift(); // Remove the oldest entry if count exceeds n
+    }
+
+    lastNEntries.push(`\n${version}: \`\`\`${value}\`\`\``);
+    count++;
+  }
+
+  return lastNEntries.join('');
+}
+
 const amountPerPage = 25;
 async function handleListCommand(client, interaction) {
   const embeds = [];
+  interaction.reply("Loading...")
 
   const modsData = await ModsData.getModsData();
   const mods = modsData.json.mods;
@@ -431,9 +449,11 @@ async function handleListCommand(client, interaction) {
       const mod = mods[modKey];
       const numOfRegular = Object.keys(mod.versions).length
       const numOfBetaOnly = Object.keys(mod.betaVersions).length - numOfRegular
-      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} known version${numOfRegular == 1 ? "" : "s"}${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
+      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} ` 
+        + `known version${numOfRegular == 1 ? "" : "s"}` 
+        + `${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
     }
-    desc += `Click here for search: </mods search:${searchCommandGuild}>`
+    desc += `Click here to search: </mods search:${searchCommandGuild}>`
 
     embed.setDescription(desc);
     embeds.push(embed);
@@ -453,9 +473,9 @@ async function handleListCommand(client, interaction) {
     )
 
   if (pages == 1) {
-    return interaction.reply({ embeds: [embeds[0]] });
+    return interaction.editReply({ content: "", embeds: [embeds[0]] });
   }
-  await interaction.reply({ embeds: [embeds[currentPage]], components: [row] }).then(async response => {
+  await interaction.editReply({ content: "", embeds: [embeds[currentPage]], components: [row] }).then(async response => {
     const collectorFilter = i => i.user.id === interaction.user.id;
 
     const collector = response.createMessageComponentCollector({ filter: collectorFilter, time: 60000 });
