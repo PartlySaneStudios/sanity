@@ -519,15 +519,13 @@ async function handleListCommand(client, interaction) {
 }
 
 async function handleHashCommand(client, interaction) {
-  // Creates an initial reply 
   await interaction.reply("Loading...")
 
-  // Gets the parameters object
   const parameters = interaction.options
 
-  // Gets the mod file
   await interaction.editReply("Downloading mod...")
 
+  // Gets the mod file
   const url = parameters.get("filelink").value
   const file = await SystemUtils.downloadFileInMemory(url)
 
