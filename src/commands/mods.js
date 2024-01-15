@@ -60,6 +60,11 @@ module.exports = {
           .setRequired(true)
           .setDescription("The download link for mod update")
       )
+      .addStringOption(option =>
+        option
+          .setName("newversion")
+          .setDescription("The new version of the mod")
+      )
     )
     .addSubcommand(subcommand => subcommand
       .setName("search") // Creates search subcommand
@@ -288,11 +293,12 @@ async function handleBetaUpdateCommand(client, interaction) {
 
   // Gets the parameters object
   const parameters = interaction.options
+  const url = parameters.get("filelink").value
+  const newVersion = parameters.get("newversion")?.value
 
   // Gets the mod file
   await interaction.editReply("Downloading mod...")
 
-  const url = parameters.get("filelink").value
   const file = await SystemUtils.downloadFileInMemory(url)
 
   await interaction.editReply("Getting Mods Data")
@@ -329,7 +335,11 @@ async function handleBetaUpdateCommand(client, interaction) {
   } catch {
     betaModVersions = mod.betaVersions
   }
-  betaModVersions[version] = hash
+  if (newVersion) {
+    betaModVersions[newVersion] = hash
+  } else {
+    betaModVersions[version] = hash
+  }
 
   mod.download = modsDataJson[id].download
 
