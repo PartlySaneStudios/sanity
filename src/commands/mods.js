@@ -320,7 +320,7 @@ async function handleBetaUpdateCommand(client, interaction) {
 
   mod.name = mcModInfoJson.name
 
-  const version = mcModInfoJson.version
+  const version = newVersion || mcModInfoJson.version
   const id = mcModInfoJson.modid
   let modVersions = {}
   try {
@@ -335,11 +335,8 @@ async function handleBetaUpdateCommand(client, interaction) {
   } catch {
     betaModVersions = mod.betaVersions
   }
-  if (newVersion) {
-    betaModVersions[newVersion] = hash
-  } else {
-    betaModVersions[version] = hash
-  }
+
+  betaModVersions[version] = hash
 
   mod.download = modsDataJson[id].download
 
