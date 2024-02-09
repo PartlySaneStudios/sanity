@@ -122,7 +122,7 @@ async function handleUpdateCommand(client, interaction) {
         ...fullJson.mod_info,
         latest_version: interaction.options.getString("version"),
         latest_version_release_date: new Date().toLocaleDateString('en-GB', {
-            day: 'numeric',
+            day: '2-digit',
             month: 'long',
             year: 'numeric'
         }),
@@ -132,7 +132,7 @@ async function handleUpdateCommand(client, interaction) {
         ...fullJson.prerelease_channel,
         latest_version: interaction.options.getString("version"),
         latest_version_release_date: new Date().toLocaleDateString('en-GB', {
-            day: 'numeric',
+            day: '2-digit',
             month: 'long',
             year: 'numeric'
         }),
@@ -185,7 +185,7 @@ async function handleBetaUpdateCommand(client, interaction) {
         ...fullJson.prerelease_channel,
         latest_version: interaction.options.getString("version"),
         latest_version_release_date: new Date().toLocaleDateString('en-GB', {
-            day: 'numeric',
+            day: '2-digit',
             month: 'long',
             year: 'numeric'
         }),
