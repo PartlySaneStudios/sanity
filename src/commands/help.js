@@ -16,8 +16,8 @@ module.exports = {
     async run(client, interaction) {
         const commands = [];
         const embeds = [];
-        const amountPerPage = 10; 
-        
+        const amountPerPage = 10;
+
         for (const command of client.commands) {
             commands.push(command[1].data.toJSON());
         }
@@ -42,10 +42,10 @@ module.exports = {
                 if (command) {
                     embed.fields.push({
                         name: Utils.capitalizeFirstLetter(command.name),
-                        value: 
-                        `
+                        value:
+                            `
                             ${command.description}
-                            Options: ${command.options.length > 0 
+                            Options: ${command.options.length > 0
                                 ? "\`/" + command.name + " <" + command.options.map(option => `${option.name}`).join("/") + ">\`"
                                 : "None"}
                         `
@@ -70,7 +70,7 @@ module.exports = {
             )
 
         if (pages == 1) {
-            return interaction.reply({ embeds: [embeds[0]]});
+            return interaction.reply({ embeds: [embeds[0]] });
         }
         await interaction.reply({ embeds: [embeds[currentPage]], components: [row] }).then(async response => {
             const collectorFilter = i => i.user.id === interaction.user.id;
@@ -83,7 +83,7 @@ module.exports = {
                 } else if (i.customId === "previous") {
                     currentPage--;
                 }
-                
+
                 if (currentPage == 0) {
                     row.components[0].setDisabled(true);
                 } else if (currentPage == pages - 1) {
