@@ -21,7 +21,6 @@ exports.getMainMenuData = async function getMainMenuData() {
 
   // Parse the JSON string to a JavaScript object
   const jsonData = JSON.parse(decodedContent);
-  console.log(jsonData)
 
   return { json: jsonData, sha: sha }
 }
@@ -30,6 +29,18 @@ exports.getAnnouncements = async function getAnnouncements() {
   const response = await this.getMainMenuJson()
 
   return response.announcements
+}
+
+exports.getVersion = async function getVersion() {
+  const response = await this.getMainMenuJson()
+
+  return response.mod_info;
+}
+
+exports.getBetaVersion = async function getBetaVersion() {
+  const response = await this.getMainMenuJson()
+
+  return response.prerelease_channel;
 }
 
 exports.getMainMenuJson = async function getData() {

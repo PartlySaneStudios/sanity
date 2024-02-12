@@ -225,7 +225,6 @@ async function handleRemoveCommand(client, interaction) {
 
     sha = mainMenuData.sha
     fullJson = mainMenuData.json
-    console.log(fullJson)
     announcements = fullJson.announcements
   } catch (error) {
     console.error('Error getting GitHub API data:', error);

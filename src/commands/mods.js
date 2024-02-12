@@ -266,17 +266,17 @@ async function handleUpdateCommand(client, interaction) {
 
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
-  .then(response => {
-    const [data, error] = response; // destructuring response array
-    if (error) {
-      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-      console.error('Error making GitHub API request:', error);
-      return
-    }
-    
-    interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!`)
+    .then(response => {
+      const [data, error] = response; // destructuring response array
+      if (error) {
+        interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+        console.error('Error making GitHub API request:', error);
+        return
+      }
 
-  })
+      interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!`)
+
+    })
 
 }
 
@@ -349,16 +349,16 @@ async function handleBetaUpdateCommand(client, interaction) {
 
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
-  .then(response => {
-    const [data, error] = response; // destructuring response array
-    if (error) {
-      interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-      console.error('Error making GitHub API request:', error);
-      return
-    }
-    
-    interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!`)
-  })
+    .then(response => {
+      const [data, error] = response; // destructuring response array
+      if (error) {
+        interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+        console.error('Error making GitHub API request:', error);
+        return
+      }
+
+      interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!`)
+    })
 }
 
 async function handleSearchCommand(client, interaction) {
@@ -399,8 +399,8 @@ async function handleSearchCommand(client, interaction) {
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
     .addFields({ name: "Versions", value: versionsField })
-    if (betaVersionsField) 
-      embed.addFields({ name: "Beta Versions", value: betaVersionsField });
+  if (betaVersionsField)
+    embed.addFields({ name: "Beta Versions", value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
@@ -467,8 +467,8 @@ async function handleListCommand(client, interaction) {
       const mod = mods[modKey];
       const numOfRegular = Object.keys(mod.versions).length
       const numOfBetaOnly = Object.keys(mod.betaVersions).length - numOfRegular
-      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} ` 
-        + `known version${numOfRegular == 1 ? "" : "s"}` 
+      desc += `- __${mod.name}__ (${modKey}): ${numOfRegular} `
+        + `known version${numOfRegular == 1 ? "" : "s"}`
         + `${numOfBetaOnly != 0 ? `, ${numOfBetaOnly} known beta version${numOfBetaOnly == 1 ? "" : "s"}.` : "."}\n`;
     }
     desc += `Click here to search: </mods search:${searchCommandGuild}>`
@@ -547,12 +547,13 @@ async function handleHashCommand(client, interaction) {
   await interaction.editReply("Organizing data...")
 
   const embed = new EmbedBuilder()
-  .setColor(config.color)
-  .setTitle(`Mod: ${mcModInfoJson.name} `)
-  .setDescription(
-    `Modid: ${mcModInfoJson.modid}
+    .setColor(config.color)
+    .setTitle(`Mod: ${mcModInfoJson.name} `)
+    .setDescription(
+      `Modid: ${mcModInfoJson.modid}
+    Version: ${mcModInfoJson.version}
     Hash: \`\`\`${hash}\`\`\``
-  )
+    )
 
-  await interaction.editReply({content: "", embeds: [embed]})
+  await interaction.editReply({ content: "", embeds: [embed] })
 }

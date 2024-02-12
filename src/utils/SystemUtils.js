@@ -29,7 +29,7 @@ exports.getData = getData
 * @param {string} repo
 * @returns {object} {json, sha}
 */
-async function getData(path, owner, repo){
+async function getData(path, owner, repo) {
     try {
         const response = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
             owner: owner,
@@ -38,7 +38,7 @@ async function getData(path, owner, repo){
             headers: {
                 'X-GitHub-Api-Version': '2022-11-28'
             }
-            });
+        });
 
         return response.data;
     }
@@ -67,15 +67,15 @@ async function getUrlContent(url) {
 function getElementFromHtml(htmlCode, className) {
     const dom = new JSDOM(htmlCode);
     const document = dom.window.document;
-  
+
     // Find the title element using its class name
     const titleElement = document.querySelector(className);
-  
+
     if (titleElement) {
-      // Extract and return the text content of the title element
-      return titleElement.textContent.trim();
+        // Extract and return the text content of the title element
+        return titleElement.textContent.trim();
     } else {
-      return null; // Title element not found
+        return null; // Title element not found
     }
 }
 
@@ -101,7 +101,6 @@ async function sendCommitRequest(path, commitName, commitAuthor, content, sha) {
         }
     })
         .then(response => {
-            console.log(response)
             return [response, null];
         })
         .catch(error => {
@@ -142,11 +141,11 @@ async function calculateSHA256(fileData) {
 
 function extractTextFileFromJar(jarBuffer, textFileName) {
     return JSZip.loadAsync(jarBuffer)
-      .then(zip => {
-        if (zip.files[textFileName]) {
-          return zip.files[textFileName].async('string');
-        } else {
-          throw new Error(`Text file '${textFileName}' not found in the JAR.`);
-        }
-      });
-  }
+        .then(zip => {
+            if (zip.files[textFileName]) {
+                return zip.files[textFileName].async('string');
+            } else {
+                throw new Error(`Text file '${textFileName}' not found in the JAR.`);
+            }
+        });
+}

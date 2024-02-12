@@ -12,7 +12,7 @@ module.exports = async (client) => {
 
     fs.readdir("src/events", (err, files) => {
         if (err || files.length <= 0) return console.error(err || "No events found.");
-    
+
         files.forEach((file) => (file.endsWith(".js") && file !== "loader.js") && require(`./${file}`)(client));
     });
 

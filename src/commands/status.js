@@ -10,7 +10,7 @@ const config = require("../config/config.json")
 
 const subcommands = {
     set: { name: "set", function: handleSetCommand },
-    toggle : { name: "toggle", function: handleToggleCommand },
+    toggle: { name: "toggle", function: handleToggleCommand },
 }
 
 module.exports = {

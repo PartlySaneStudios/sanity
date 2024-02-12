@@ -14,14 +14,14 @@ exports.getModsData = async function getModsData() {
   const data = await SystemUtils.getData(path, owner, repo);
 
   const sha = data.sha;
-  
+
   // Decode the content from Base64 to UTF-8
   const decodedContent = Buffer.from(data.content, 'base64').toString('utf-8');
 
   // Parse the JSON string to a JavaScript object
   const jsonData = JSON.parse(decodedContent);
 
-  return { json: jsonData, sha:sha };
+  return { json: jsonData, sha: sha };
 }
 
 exports.getModsJson = async function getData() {
