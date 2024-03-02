@@ -5,7 +5,7 @@
 
 
 const { ActivityType } = require("discord.js")
-const config = require("../config/config.json")
+const config = require("../../config/config.json")
 
 module.exports = async (client) => {
     setInterval(() => {
