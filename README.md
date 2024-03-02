@@ -1,38 +1,40 @@
 # Sanity
-A discord bot to help assist with Partly Sane Skies
+Welcome to Sanity! This bot is designed to assist our interactions within the Partly Sane Skies Development Team.
 
 ## How to use
-Install a [NodeJS Version newer than 16.11.0](https://nodejs.org/en), using the LTS of 20.10.0 is best.
-After installing, clone this repo.
-In the folder of this repo, run `npm start` in the command prompt to install the given dependencies.
-It will take a bit, after it's done, it will automatically run `node main.js` to start the bot
+1. **NodeJS Installation:** Ensure you have [NodeJS](https://nodejs.org/en) installed, preferably version 16.11.0 or newer. The LTS version of 20.10.0 is recommended.
+2. **Clone Repository:** Clone this repository to your local machine.
+3. **Dependency Installation:** In the repository folder, run `npm start` in the command prompt. This will install the necessary dependencies. After completion, the bot will launch using `node main.js`.
 
 ## Setting Up the .env
-Currently, the .env file needs 4 elements: TOKEN, GITHUB_TOKEN, OWNER & REPO
+Currently, the `.env` file needs 6 elements: `TOKEN`, `GITHUB_TOKEN`, `OWNER`, `REPO`, `SERVER_URL` & `SERVER_STATUS_CHANNEL_ID`
 
-To obtain the Bot Token, follow these steps:
+### Obtaining Bot Token
+Follow these steps to obtain the Bot Token:
+
 1. Head to the [Developer Portal](https://discord.com/developers/applications).
-2. Create a "New Application" with an appropriate name and press "Create".
-3. Copy the APPLICATION ID from the "General Information" Tab.
-4. Navigate to the "Bot" Tab, press "Reset Token" (you may need to enter your Auth Token).
-5. Copy the Token that is now visible.
-6. In the "Bot" Tab, scroll down to "Privileged Gateway Intents" and enable "Presence Intent," "Server Members Intent," & "Message Content Intent" for the bot to start.
-7. In your project, create a file named ".env," open it, and add the line "TOKEN=your_token," replacing "your_token" with your copied token (without quotation marks).
+2. Create a new application, copy the APPLICATION ID.
+3. In the "Bot" tab, reset the token and copy it.
+4. Enable "Presence Intent," "Server Members Intent," & "Message Content Intent."
+5. In your project, create a .env file, add TOKEN=your_token (replace with your token).
 
-Additionally, for working with the Github API in `announcement.js` as well as `mods.js`, you'll need a GITHUB_TOKEN with repo access:
+### Obtaining Github Token
+For GitHub API access in `announcement.js` and `mods.js`:
 1. Open [Developer Settings](https://github.com/settings/tokens).
-2. Click on "Tokens (classic)" and generate a new token with the repo scope.
+2. Generate a new token with the repo scope.
 3. Copy the generated token.
-4. In your .env file, add a new line "GITHUB_TOKEN=your_token", replacing "your_token" with the copied token (without quotation marks).
+4. In `.env`, add `GITHUB_TOKEN=your_token`.
 
-Ensure your repository aligns with the specified structure outlined below:
-1. Implement a file named `mods.json` within the directory `/data/mods.json`. To ensure proper formatting, refer the example available [here](https://github.com/PartlySaneStudios/partly-sane-skies-public-data/blob/main/info.md#datamodsjson).
+### Repository Structure
+Ensure your repository aligns with the specified structure for mods.json and main_menu.json. Examples can be found [here](https://github.com/PartlySaneStudios/partly-sane-skies-public-data/blob/main/info.md).
 
-2. Implement a file named `main_menu.json` within the directory `/data/main_menu.json`. To ensure proper formatting, refer the example available [here](https://github.com/PartlySaneStudios/partly-sane-skies-public-data/blob/main/info.md#datamain_menujson).
+Add two more lines to your `.env` file:
+- `OWNER=your_github_username`
+- `REPO=your_repository_name`
 
-Finally, add two more lines to your .env file:
-- "OWNER=j10a1n15" (replace with your desired GitHub username)
-- "REPO=partly-sane-skies-public-data" (replace with the name of your GitHub repository)
+### Partly Sane Cloud Integration
+If using Partly Sane Cloud, include `SERVER_URL` and `SERVER_STATUS_CHANNEL_ID` properties in your `.env`.
+
 
 Now your .env file should look like this:
 ```env
@@ -40,10 +42,12 @@ TOKEN=your_bot_token
 GITHUB_TOKEN=your_github_token
 OWNER=your_user_name
 REPO=your_repo
+SERVER_URL=server_url
+SERVER_STATUS_CHANNEL_ID=channel_id
 ```
 
 ## Inviting the Bot
-To invite your Bot, head to [Permission Calculator](discordapi.com/permissions.html) and copy your APPLICATION ID into the "Client ID" line.
-Now select the fitting permissions (Administrator should do just fine) and then click the link at the bottom.
-Now do the normal discord invite thing and Boom, you're done. Yay
-Time to code!
+1. Visit the [Permission Calculator](discordapi.com/permissions.html)
+2. Copy your APPLICATION ID into "Client ID."
+3. Select appropriate permissions (Administrator is recommended).
+4. Click the generated link, follow the Discord invite process, and voilà, you can use the bot now!
