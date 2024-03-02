@@ -6,7 +6,7 @@
 
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const fs = require("fs");
-const config = require("../config/config.json")
+const config = require("../../config/config.json")
 
 const subcommands = {
     set: { name: "set", function: handleSetCommand },

@@ -5,9 +5,9 @@
 
 
 const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const MainMenuData = require("../data/main_menu.js");
-const SystemUtils = require("../utils/SystemUtils.js");
-const config = require("../config/config.json");
+const MainMenuData = require("../../data/main_menu.js");
+const SystemUtils = require("../../utils/SystemUtils.js");
+const config = require("../../config/config.json");
 
 
 const subcommands = {
