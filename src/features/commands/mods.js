@@ -398,9 +398,9 @@ async function handleSearchCommand(client, interaction) {
     .setColor(config.color)
     .setTitle("Mod - " + mod.name)
     .setDescription(`Mod ID: ${Object.keys(mods)[0]}\n\nDownload: ${mod.download}`)
-    .addFields({ name: "Versions", value: versionsField })
+    .addFields({ name: `Versions (${Object.keys(mod.versions).length})`, value: versionsField })
   if (betaVersionsField)
-    embed.addFields({ name: "Beta Versions", value: betaVersionsField });
+    embed.addFields({ name: `Beta Versions (${Object.keys(mod.betaVersions).length})`, value: betaVersionsField });
 
   interaction.reply({ embeds: [embed] });
 }
