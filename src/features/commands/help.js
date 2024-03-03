@@ -6,8 +6,8 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const Utils = require("../utils/StringUtils");
-const config = require("../config/config.json");
+const Utils = require("../../utils/StringUtils");
+const config = require("../../config/config.json");
 
 module.exports = {
     data: new SlashCommandBuilder()

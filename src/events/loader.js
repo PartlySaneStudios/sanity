@@ -16,11 +16,14 @@ module.exports = async (client) => {
         files.forEach((file) => (file.endsWith(".js") && file !== "loader.js") && require(`./${file}`)(client));
     });
 
+    require("../features/automatic/serverStatus")(client);
+    require("../features/automatic/setBotStatus")(client);
+
     /* 
      * Load commands
     */
     // Read all files in the commands folder
-    loadAllFilesInFolder("src/commands", client)
+    loadAllFilesInFolder("src/features/commands", client)
 
     console.log("\x1b[42m%s\x1b[0m", "Ready.");
 };
