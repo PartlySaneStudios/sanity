@@ -19,3 +19,21 @@ exports.getStatus = async function () {
         return null;
     }
 };
+
+exports.getDailyFunFact = async function () {
+    try {
+        const url = `${serverUrl}/v1/pss/funfact`;
+        const response = await fetch(url);
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.funFact;
+        } else {
+            console.error('Failed to fetch daily fun fact:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching daily fun fact:', error);
+        return null;
+    }
+}
