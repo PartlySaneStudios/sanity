@@ -8,9 +8,7 @@ const { Events, ChannelType } = require('discord.js');
 
 module.exports = async (client) => {
     client.on(Events.MessageCreate, async (message) => {
-        if (message.author.bot) return;
         if (message.channel.type === 'DM') return;
-
 
         try {
             if (message.channel.type === ChannelType.GuildAnnouncement) message.crosspost();
@@ -18,5 +16,9 @@ module.exports = async (client) => {
         catch (e) {
             console.error("Error while crossposting message: ", e);
         }
+        
+        if (message.author.bot) return;
+        
+        
     });
 }
