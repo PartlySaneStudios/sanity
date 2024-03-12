@@ -7,7 +7,7 @@ Welcome to Sanity! This bot is designed to assist our interactions within the Pa
 3. **Dependency Installation:** In the repository folder, run `npm start` in the command prompt. This will install the necessary dependencies. After completion, the bot will launch using `node main.js`.
 
 ## Setting Up the .env
-Currently, the `.env` file needs 6 elements: `TOKEN`, `GITHUB_TOKEN`, `OWNER`, `REPO`, `SERVER_URL` & `SERVER_STATUS_CHANNEL_ID`
+Currently, the `.env` file needs 6 elements: `TOKEN`, `GITHUB_TOKEN`, `OWNER`, `REPO`, `SERVER_URL`, `SERVER_STATUS_CHANNEL_ID` & `DAILY_FUNFACT_CHANNEL_ID`
 
 ### Obtaining Bot Token
 Follow these steps to obtain the Bot Token:
@@ -33,7 +33,7 @@ Add two more lines to your `.env` file:
 - `REPO=your_repository_name`
 
 ### Partly Sane Cloud Integration
-If using Partly Sane Cloud, include `SERVER_URL` and `SERVER_STATUS_CHANNEL_ID` properties in your `.env`.
+If using Partly Sane Cloud, include `SERVER_URL`, `SERVER_STATUS_CHANNEL_ID` and `DAILY_FUNFACT_CHANNEL_ID` properties in your `.env`.
 
 
 Now your .env file should look like this:
@@ -44,6 +44,7 @@ OWNER=your_user_name
 REPO=your_repo
 SERVER_URL=server_url
 SERVER_STATUS_CHANNEL_ID=channel_id
+DAILY_FUNFACT_CHANNEL_ID=channel_id
 ```
 
 ## Inviting the Bot

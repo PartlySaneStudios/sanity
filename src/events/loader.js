@@ -18,6 +18,7 @@ module.exports = async (client) => {
 
     require("../features/automatic/serverStatus")(client);
     require("../features/automatic/setBotStatus")(client);
+    require("../features/automatic/dailyFunFact")(client);
 
     /* 
      * Load commands
