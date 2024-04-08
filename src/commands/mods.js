@@ -86,6 +86,7 @@ module.exports = {
         .setAutocomplete(true)
       ),
     ),
+    
   async autocomplete(client, interaction) {
     const focusedValue = interaction.options.getFocused();
     const modsData = await ModsData.getModsData();

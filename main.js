@@ -5,6 +5,7 @@
 
 
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { loadItemAutoComplete } = require('./src/commands/psc');
 const client = new Client({
   intents: [
     GatewayIntentBits.DirectMessageReactions,
@@ -38,3 +39,4 @@ client.on("ready", () => {
 });
 
 client.login(process.env.TOKEN);
+loadItemAutoComplete()
