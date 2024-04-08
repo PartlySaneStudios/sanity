@@ -236,7 +236,7 @@ async function requestPSC(endpoint, user) {
   let headers = new Headers({
     "Accept"       : "application/json",
     "Content-Type" : "application/json",
-    "User-Agent"   : "Partly-Sane-Skies/"+ user
+    "User-Agent"   : "Sanity/"+ user
   });
 
   const url = config.pscEndpoint + "/" + endpoint
