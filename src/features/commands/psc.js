@@ -239,7 +239,7 @@ async function requestPSC(endpoint, user) {
     "User-Agent"   : "Sanity/"+ user
   });
 
-  const url = config.pscEndpoint + "/" + endpoint
+  const url = process.env.SERVER_URL + "/" + endpoint
   return (await fetch(url, {
     method: 'GET',
     headers: headers
