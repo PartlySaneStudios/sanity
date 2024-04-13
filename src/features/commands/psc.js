@@ -168,8 +168,13 @@ function createItemEmbed(itemData) {
 
   embed.addFields({ 
     name: "Item Information:", 
-    value: `Name: ${itemData.name}\nRarity: ${itemData.rarity}\nMaterial: ${itemData.material}\nUnstackable: ${itemData.unstackable}\nNPC Sell Price: ${itemData.npcSell} coins` },
-  )
+    value: 
+`Name: ${itemData.name}
+Rarity: ${itemData.rarity}
+Material: ${itemData.material}
+Unstackable: ${itemData.unstackable}
+NPC Sell Price: ${itemData.npcSell} coins` 
+  })
 
   if (itemData.lowestBin != 0) {
     embed.addFields({ 
