@@ -171,7 +171,12 @@ function createItemEmbed(itemData) {
   )
 
   if (itemData.lowestBin != 0) {
-    embed.addFields({ name: "Auction Information:", value: `Lowest Bin: ${itemData.lowestBin} coins\nAverage Lowest Bin (24 Hours): ${itemData.averageLowestBin} coins` },)
+    embed.addFields({ 
+      name: "Auction Information:", 
+      value: 
+`Lowest Bin: ${itemData.lowestBin} coins
+Average Lowest Bin (24 Hours): ${itemData.averageLowestBin} coins` 
+    })
   } else {
     embed.addFields({name: "Auction Information:", value: "Sellable: false"})
   }
