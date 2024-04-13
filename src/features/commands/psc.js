@@ -166,8 +166,9 @@ function createItemEmbed(itemData) {
     const embed = new EmbedBuilder()
     .setColor(config.color)
 
-  embed.addFields(
-    { name: "Item Information:", value: `Name: ${itemData.name}\nRarity: ${itemData.rarity}\nMaterial: ${itemData.material}\nUnstackable: ${itemData.unstackable}\nNPC Sell Price: ${itemData.npcSell} coins` },
+  embed.addFields({ 
+    name: "Item Information:", 
+    value: `Name: ${itemData.name}\nRarity: ${itemData.rarity}\nMaterial: ${itemData.material}\nUnstackable: ${itemData.unstackable}\nNPC Sell Price: ${itemData.npcSell} coins` },
   )
 
   if (itemData.lowestBin != 0) {
@@ -178,7 +179,10 @@ function createItemEmbed(itemData) {
 Average Lowest Bin (24 Hours): ${itemData.averageLowestBin} coins` 
     })
   } else {
-    embed.addFields({name: "Auction Information:", value: "Sellable: false"})
+    embed.addFields({
+      name: "Auction Information:", 
+      value: "Sellable: false"
+    })
   }
   if (itemData.bazaarBuy != 0 || itemData.bazaarSell != 0) {
     embed.addFields({ name: "Bazaar Information:", value: `Buy: ${itemData.bazaarBuy} coins\nSell: ${itemData.bazaarSell} coins\nAverage Bazaar Buy (24 Hours): ${itemData.averageBazaarBuy} coins\nAverage Bazaar Sell (24 Hours): ${itemData.averageBazaarSell} coins` },)
