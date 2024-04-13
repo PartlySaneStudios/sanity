@@ -248,7 +248,18 @@ Floor 5: ${currentProfile.normalRuns[5]}
 Floor 6: ${currentProfile.normalRuns[6]}
 Floor 7: ${currentProfile.normalRuns[7]}` 
     },
-    { name: "Master Mode Dungeon Runs:", value: `Floor Entrance: ${currentProfile.masterModeRuns[0]}\nFloor 1: ${currentProfile.masterModeRuns[1]}\nFloor 2: ${currentProfile.masterModeRuns[2]}\nFloor 3: ${currentProfile.masterModeRuns[3]}\nFloor 4: ${currentProfile.masterModeRuns[4]}\nFloor 5: ${currentProfile.masterModeRuns[5]}\nFloor 6: ${currentProfile.masterModeRuns[6]}\nFloor 7: ${currentProfile.masterModeRuns[7]}` }
+    { 
+      name: "Master Mode Dungeon Runs:", 
+      value:
+`Floor Entrance: ${currentProfile.masterModeRuns[0]}
+Floor 1: ${currentProfile.masterModeRuns[1]}
+Floor 2: ${currentProfile.masterModeRuns[2]}
+Floor 3: ${currentProfile.masterModeRuns[3]}
+Floor 4: ${currentProfile.masterModeRuns[4]}
+Floor 5: ${currentProfile.masterModeRuns[5]}
+Floor 6: ${currentProfile.masterModeRuns[6]}
+Floor 7: ${currentProfile.masterModeRuns[7]}` 
+    }
   )
   return embed
 }
