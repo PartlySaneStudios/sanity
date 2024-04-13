@@ -216,10 +216,16 @@ function createPlayerEmbed(playerdata) {
     .setColor(config.color)
 
   embed.addFields(
-    { name: "Skyblock:", value: `Skyblock Level: ${currentProfile.skyblockExperience/100}
+    { 
+      name: "Skyblock:", 
+      value: 
+`Skyblock Level: ${currentProfile.skyblockExperience/100}
 Pet Name: ${currentProfile.petName}\nSecret Count: ${currentProfile.secretsCount}
-Average Secrets per Run ${Math.round(currentProfile.secretsCount*10/currentProfile.totalRuns)/10}` },
-    { name: "Skills:", value: `Catacombs Experience: ${Math.round(currentProfile.catacombsExperience*10)/10}\nCombat Experience: ${Math.round(currentProfile.combatExperience*10)/10}\nMining Experience: ${Math.round(currentProfile.miningExperience*10)/10}\nForaging Experience: ${Math.round(currentProfile.foragingExperience*10)/10}\nFarming Experience: ${Math.round(currentProfile.farmingExperience*10)/10}\nEnchanting Experience: ${Math.round(currentProfile.enchantingExperience*10)/10}\nFishing Experience: ${Math.round(currentProfile.fishingExperience*10)/10}\nAlchemy Experience: ${Math.round(currentProfile.alchemyExperience*10)/10}\nTaming Experience: ${Math.round(currentProfile.tamingExperience*10)/10}` },
+Average Secrets per Run ${Math.round(currentProfile.secretsCount*10/currentProfile.totalRuns)/10}` 
+    },
+    { 
+      name: "Skills:", 
+      value:`Catacombs Experience: ${Math.round(currentProfile.catacombsExperience*10)/10}\nCombat Experience: ${Math.round(currentProfile.combatExperience*10)/10}\nMining Experience: ${Math.round(currentProfile.miningExperience*10)/10}\nForaging Experience: ${Math.round(currentProfile.foragingExperience*10)/10}\nFarming Experience: ${Math.round(currentProfile.farmingExperience*10)/10}\nEnchanting Experience: ${Math.round(currentProfile.enchantingExperience*10)/10}\nFishing Experience: ${Math.round(currentProfile.fishingExperience*10)/10}\nAlchemy Experience: ${Math.round(currentProfile.alchemyExperience*10)/10}\nTaming Experience: ${Math.round(currentProfile.tamingExperience*10)/10}` },
     { name: "Normal Dungeon Runs:", value: `Floor Entrance: ${currentProfile.normalRuns[0]}\nFloor 1: ${currentProfile.normalRuns[1]}\nFloor 2: ${currentProfile.normalRuns[2]}\nFloor 3: ${currentProfile.normalRuns[3]}\nFloor 4: ${currentProfile.normalRuns[4]}\nFloor 5: ${currentProfile.normalRuns[5]}\nFloor 6: ${currentProfile.normalRuns[6]}\nFloor 7: ${currentProfile.normalRuns[7]}` },
     { name: "Master Mode Dungeon Runs:", value: `Floor Entrance: ${currentProfile.masterModeRuns[0]}\nFloor 1: ${currentProfile.masterModeRuns[1]}\nFloor 2: ${currentProfile.masterModeRuns[2]}\nFloor 3: ${currentProfile.masterModeRuns[3]}\nFloor 4: ${currentProfile.masterModeRuns[4]}\nFloor 5: ${currentProfile.masterModeRuns[5]}\nFloor 6: ${currentProfile.masterModeRuns[6]}\nFloor 7: ${currentProfile.masterModeRuns[7]}` }
   )
