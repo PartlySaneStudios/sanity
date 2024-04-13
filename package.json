@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "main": "node main.js",
+    "dev": "nodemon main.js",
     "start": "npm install && node main.js"
   },
   "repository": {
@@ -21,9 +22,12 @@
     "@octokit/rest": "^20.0.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
+    "jsdom": "^23.0.1",
     "jszip": "^3.10.1",
     "octokit": "^3.1.2",
-    "unzipper": "^0.10.14",
-    "jsdom": "^23.0.1"
+    "unzipper": "^0.10.14"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
