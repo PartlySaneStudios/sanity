@@ -190,7 +190,14 @@ Average Lowest Bin (24 Hours): ${itemData.averageLowestBin} coins`
     })
   }
   if (itemData.bazaarBuy != 0 || itemData.bazaarSell != 0) {
-    embed.addFields({ name: "Bazaar Information:", value: `Buy: ${itemData.bazaarBuy} coins\nSell: ${itemData.bazaarSell} coins\nAverage Bazaar Buy (24 Hours): ${itemData.averageBazaarBuy} coins\nAverage Bazaar Sell (24 Hours): ${itemData.averageBazaarSell} coins` },)
+    embed.addFields({ 
+      name: "Bazaar Information:", 
+      value: 
+`Buy: ${itemData.bazaarBuy} coins
+Sell: ${itemData.bazaarSell} coins
+Average Bazaar Buy (24 Hours): ${itemData.averageBazaarBuy} coins
+Average Bazaar Sell (24 Hours): ${itemData.averageBazaarSell} coins` 
+    })
   } else {
     embed.addFields({name: "Bazaar Information:", value: "Sellable: false"})
   }
