@@ -199,7 +199,10 @@ Average Bazaar Buy (24 Hours): ${itemData.averageBazaarBuy} coins
 Average Bazaar Sell (24 Hours): ${itemData.averageBazaarSell} coins` 
     })
   } else {
-    embed.addFields({name: "Bazaar Information:", value: "Sellable: false"})
+    embed.addFields({
+      name: "Bazaar Information:", 
+      value: "Sellable: false"
+    })
   }
 
 
