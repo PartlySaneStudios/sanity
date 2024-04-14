@@ -3,10 +3,8 @@
 // See LICENSE for copyright and license notices.
 //
 
-const { EmbedBuilder, SlashCommandBuilder, Embed } = require('discord.js');
-const MainMenuData = require("../data/main_menu.js");
-const SystemUtils = require("../utils/SystemUtils.js");
-const config = require("../config/config.json")
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const config = require("../../config/config.json")
 
 const subcommands = {
     status: { name: "status", function: handleStatusCommand, permission: false },
@@ -309,4 +307,3 @@ async function requestPSC(endpoint, user) {
     headers: headers
   }))
 }
-
