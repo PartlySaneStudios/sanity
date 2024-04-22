@@ -24,7 +24,7 @@ module.exports = {
       .setDescription("Using the Partly Sane Cloud API")
       .addSubcommand(subcommand => subcommand
           .setName("downloads")
-          .setDescription("Pings the status on the Partly Sane Cloud API")
+          .setDescription("View the total download count for Partly Sane Skies")
           .addStringOption(option => option
             .setName("version")
             .setRequired(false)
