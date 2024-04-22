@@ -6,6 +6,7 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const config = require("../../config/config.json")
 const { Octokit } = require('@octokit/rest');
+const StringUtils = require("../../utils/StringUtils");
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
@@ -195,9 +196,10 @@ async function getGithubDownloads() {
       }
 
       obj[versionTag].downloads = downloadCount
-      const fullVersionString = version.published_at 
+
       // Format: "created_at": "2024-04-22T01:48:05Z",
-      obj[versionTag].date = fullVersionString.substring(0, fullVersionString.indexOf("T"))
+      const date = new Date(version.published_at);
+      obj[versionTag].date= StringUtils.formatDate(date);
     }
     page++
   }
