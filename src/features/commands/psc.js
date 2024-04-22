@@ -14,7 +14,7 @@ const subcommands = {
 }
 
 const items = []
-
+loadItemAutoComplete()
 
 async function getItem(id) {
   const itemData = await (await requestPSC(`/v1/hypixel/skyblockitem`)).json()
@@ -58,15 +58,6 @@ module.exports = {
         )
         .setDescription("Looks up data for a specific Skyblock Item on the Partly Sane Cloud API")
       ),
-
-    async loadItemAutoComplete() {
-      const skyblockItem = await (await requestPSC("/v1/hypixel/skyblockitem")).json()
-    
-      const products = skyblockItem.products
-      for (let i = 0; i < products.length; i++) {
-        items.push({ id: products[i].itemId, name: products[i].name})
-      }
-    },
 
     async run(client, interaction) {
         // Gets the subcommand
@@ -113,6 +104,14 @@ module.exports = {
       await interaction.respond(results);
     },  
 }
+async function loadItemAutoComplete() {
+  const skyblockItem = await (await requestPSC("/v1/hypixel/skyblockitem")).json()
+
+  const products = skyblockItem.products
+  for (let i = 0; i < products.length; i++) {
+    items.push({ id: products[i].itemId, name: products[i].name})
+  }
+}
 
 
 async function handleStatusCommand(client, interaction) {
@@ -126,7 +125,7 @@ async function handleStatusCommand(client, interaction) {
 
   embed.addFields({ name: "Status:", value: `Success: \`\`${response.success}\`\``})
 
-  await interaction.editReply({ embeds: [embed] })
+  await interaction.editReply({ content: " ", embeds: [embed] })
 }
 
 async function handleSkyblockPlayerCommand(client, interaction) {
