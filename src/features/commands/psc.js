@@ -14,7 +14,11 @@ const subcommands = {
 }
 
 const items = []
-loadItemAutoComplete()
+try {
+  loadItemAutoComplete()
+} catch(e) {
+  console.error(e)
+}
 
 async function getItem(id) {
   const itemData = await (await requestPSC(`/v1/hypixel/skyblockitem`)).json()
