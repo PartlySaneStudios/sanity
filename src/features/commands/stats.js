@@ -96,11 +96,13 @@ async function handleDownloadsCommand(client, interaction) {
       mergedDownloads[version] = {}
       mergedDownloads[version].githubDownloads = 0
       mergedDownloads[version].modrinthDownloads = 0
+      mergedDownloads[version].date = ""
     }
 
     const verisonDownloads = githubDownloads[version].downloads
     mergedDownloads[version].githubDownloads += verisonDownloads
     githubDownloadTotal += verisonDownloads
+    mergedDownloads[version].date = githubDownloads[version].date
   }
 
   for (let i = 0; i < Object.keys(modrinthDownloads).length; i++) {
@@ -110,6 +112,7 @@ async function handleDownloadsCommand(client, interaction) {
       mergedDownloads[version] = {}
       mergedDownloads[version].githubDownloads = 0
       mergedDownloads[version].modrinthDownloads = 0
+      mergedDownloads[version].date = ""
     }
 
     const verisonDownloads = modrinthDownloads[version].downloads
@@ -127,14 +130,14 @@ async function handleDownloadsCommand(client, interaction) {
 
     for (let i = 0; i < versions.length && i < 5 ; i++) {
       const totalDownloads = mergedDownloads[versions[i]].githubDownloads + mergedDownloads[versions[i]].modrinthDownloads
-      versionDownloadString += `__${versions[i]}__\n${totalDownloads} total - ${mergedDownloads[versions[i]].githubDownloads} GitHub, ${mergedDownloads[versions[i]].modrinthDownloads} Modrinth\n`
+      versionDownloadString += `__${versions[i]}__ *(${mergedDownloads[versions[i]].date})*\n${totalDownloads} downloads total - ${mergedDownloads[versions[i]].githubDownloads} GitHub, ${mergedDownloads[versions[i]].modrinthDownloads} Modrinth\n\n`
     }
   } else {
     const totalDownloads = mergedDownloads[specifiedVersion].githubDownloads + mergedDownloads[specifiedVersion].modrinthDownloads
-    versionDownloadString = `__${specifiedVersion}__\n${totalDownloads} total - ${mergedDownloads[specifiedVersion].githubDownloads} GitHub, ${mergedDownloads[specifiedVersion].modrinthDownloads} Modrinth`
+    versionDownloadString = `__${specifiedVersion}__ *(${mergedDownloads[specifiedVersion].date})*\n${totalDownloads} downloads total - ${mergedDownloads[specifiedVersion].githubDownloads} GitHub, ${mergedDownloads[specifiedVersion].modrinthDownloads} Modrinth`
   }
 
-  const totalDownloadString = `${githubDownloadTotal + modrinthDownloadTotal} total - ${githubDownloadTotal} GitHub, ${modrinthDownloadTotal} Modrinth`
+  const totalDownloadString = `${githubDownloadTotal + modrinthDownloadTotal} downloads total - ${githubDownloadTotal} GitHub, ${modrinthDownloadTotal} Modrinth`
 
 
   const embed = new EmbedBuilder()
@@ -188,6 +191,9 @@ async function getGithubDownloads() {
       }
 
       obj[versionTag].downloads = downloadCount
+      const fullVersionString = version.published_at 
+      // Format: "created_at": "2024-04-22T01:48:05Z",
+      obj[versionTag].date = fullVersionString.substring(0, fullVersionString.indexOf("T"))
     }
     page++
   }
