@@ -126,7 +126,7 @@ async function handleStatusCommand(client, interaction) {
 
   embed.addFields({ name: "Status:", value: `Success: \`\`${response.success}\`\``})
 
-  await interaction.editReply({ embeds: [embed] })
+  await interaction.editReply({ content: " ", embeds: [embed] })
 }
 
 async function handleSkyblockPlayerCommand(client, interaction) {

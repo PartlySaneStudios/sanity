@@ -143,7 +143,7 @@ async function handleDownloadsCommand(client, interaction) {
     .addFields({ name: "Total:", value: totalDownloadString})
     .addFields({ name: "By Version", value: versionDownloadString})
   
-  await interaction.editReply({ embeds: [embed] })
+  await interaction.editReply({ content: " ", embeds: [embed] })
 
 }
 
