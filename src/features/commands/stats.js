@@ -16,7 +16,11 @@ const subcommands = {
 }
 
 let versions = []
-loadAutoComplete()
+try {
+  loadAutoComplete()
+} catch(e) {
+  console.error(e)
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
