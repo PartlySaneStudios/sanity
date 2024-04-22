@@ -15,7 +15,7 @@ const subcommands = {
     downloads: { name: "downloads", function: handleDownloadsCommand, permission: false },
 }
 
-let items = []
+let versions = []
 loadAutoComplete()
 
 module.exports = {
@@ -61,12 +61,12 @@ module.exports = {
       const focusedValue = interaction.options.getFocused();
   
       const results = [];
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        if (item.toLowerCase().includes(focusedValue.toLowerCase())) {
+      for (let i = 0; i < versions.length; i++) {
+        const version = items[i]
+        if (version.toLowerCase().includes(focusedValue.toLowerCase())) {
           results.push({
-            name: item,
-            value: item,
+            name: version,
+            value: version,
           });
         }
       }
@@ -83,7 +83,7 @@ async function handleDownloadsCommand(client, interaction) {
   await interaction.reply("Loading...")
 
   const githubDownloads = await getGithubDownloads()
-  items = Object.keys(githubDownloads)
+  versions = Object.keys(githubDownloads)
   const modrinthDownloads = await getModrinthDownloads()
 
   const mergedDownloads = {}
