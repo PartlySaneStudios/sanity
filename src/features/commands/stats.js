@@ -131,7 +131,7 @@ async function handleDownloadsCommand(client, interaction) {
     }
   } else {
     const totalDownloads = mergedDownloads[specifiedVersion].githubDownloads + mergedDownloads[specifiedVersion].modrinthDownloads
-    versionDownloadString = `__${versions[i]}__\n${totalDownloads} total - ${mergedDownloads[specifiedVersion].githubDownloads} GitHub, ${mergedDownloads[specifiedVersion].modrinthDownloads} Modrinth`
+    versionDownloadString = `__${specifiedVersion}__\n${totalDownloads} total - ${mergedDownloads[specifiedVersion].githubDownloads} GitHub, ${mergedDownloads[specifiedVersion].modrinthDownloads} Modrinth`
   }
 
   const totalDownloadString = `${githubDownloadTotal + modrinthDownloadTotal} total - ${githubDownloadTotal} GitHub, ${modrinthDownloadTotal} Modrinth`
