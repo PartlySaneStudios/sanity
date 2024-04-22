@@ -29,7 +29,7 @@ module.exports = {
             .setName("version")
             .setRequired(false)
             .setAutocomplete(true)
-            .setDescription("The username associated with the player")
+            .setDescription("Specified version to see downloads")
           )
       ),
 
