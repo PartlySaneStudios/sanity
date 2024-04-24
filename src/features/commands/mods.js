@@ -349,6 +349,11 @@ async function handleBetaUpdateCommand(client, interaction) {
   fullData.mods = modsDataJson
 
   await interaction.editReply("Sending Data")
+  
+  
+  const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
     .then(response => {
       const [data, error] = response; // destructuring response array
@@ -358,7 +363,7 @@ async function handleBetaUpdateCommand(client, interaction) {
         return
       }
 
-      interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!`)
+      interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}`)
     })
 }
 
