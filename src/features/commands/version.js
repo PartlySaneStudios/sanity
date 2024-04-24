@@ -148,7 +148,7 @@ async function handleUpdateCommand(client, interaction) {
         interaction.member.user.tag,
         fullJson,
         sha
-    ).then(response => {
+    ).then(async response => {
         const [data, error] = response; // destructuring response array
         if (error) {
             interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
@@ -156,7 +156,9 @@ async function handleUpdateCommand(client, interaction) {
             return
         }
 
-        interaction.editReply(`[Version ${versionPrototype.latest_version} (${versionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!`)
+        const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+        interaction.editReply(`[Version ${versionPrototype.latest_version} (${versionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
     })
 }
 
@@ -200,7 +202,7 @@ async function handleBetaUpdateCommand(client, interaction) {
         interaction.member.user.tag,
         fullJson,
         sha
-    ).then(response => {
+    ).then(async response => {
         const [data, error] = response; // destructuring response array
         if (error) {
             interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
@@ -208,6 +210,8 @@ async function handleBetaUpdateCommand(client, interaction) {
             return
         }
 
-        interaction.editReply(`[Version ${betaVersionPrototype.latest_version} (${betaVersionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!`)
+        const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+        interaction.editReply(`[Version ${betaVersionPrototype.latest_version} (${betaVersionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
     })
 }
