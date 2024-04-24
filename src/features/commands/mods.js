@@ -196,7 +196,9 @@ async function handleAddCommand(client, interaction) {
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Added ${id} to the mods list`, interaction.member.user.tag, fullData, modsDataSha)
 
-  await interaction.editReply(`Successfully added ${id} to the mods list!`)
+  const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+  await interaction.editReply(`Successfully added ${id} to the mods list!\n*${pscResetResponse}*`)
 }
 
 async function handleUpdateCommand(client, interaction) {
@@ -267,7 +269,7 @@ async function handleUpdateCommand(client, interaction) {
 
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
-    .then(response => {
+    .then(async response => {
       const [data, error] = response; // destructuring response array
       if (error) {
         interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
@@ -275,7 +277,9 @@ async function handleUpdateCommand(client, interaction) {
         return
       }
 
-      interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!`)
+      const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+      interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
 
     })
 
@@ -351,17 +355,18 @@ async function handleBetaUpdateCommand(client, interaction) {
   await interaction.editReply("Sending Data")
   
   
-  const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
 
   await SystemUtils.sendCommitRequest("data/mods.json", `Updated ${id} to version ${version}`, interaction.member.user.tag, fullData, modsDataSha)
-    .then(response => {
+    .then(async response => {
       const [data, error] = response; // destructuring response array
       if (error) {
         interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
         console.error('Error making GitHub API request:', error);
         return
       }
+
+      const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
       interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}`)
     })
