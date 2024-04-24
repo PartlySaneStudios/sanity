@@ -197,7 +197,7 @@ async function handleSetCommand(client, interaction) {
     interaction.member.user.tag,
     fullJson,
     sha
-  ).then(response => {
+  ).then(async response => {
     const [data, error] = response; // destructuring response array
     if (error) {
       interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
@@ -205,7 +205,9 @@ async function handleSetCommand(client, interaction) {
       return
     }
 
-    interaction.editReply(`[Successfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!`)
+    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+    interaction.editReply(`[Successfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
   })
 }
 
@@ -267,7 +269,9 @@ async function handleRemoveCommand(client, interaction) {
       return
     }
 
-    interaction.editReply(`[Successfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!`)
+    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+
+    interaction.editReply(`[Successfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
   })
 }
 
