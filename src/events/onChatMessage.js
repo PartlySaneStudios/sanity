@@ -7,10 +7,9 @@
 const { Events } = require('discord.js');
 
 module.exports = async (client) => {
-    client.on(Events.MessageCreate, async (message) => {
-        if (message.author.bot) return;
-        if (message.channel.type === 'DM') return;
-
-
-    });
+  client.on(Events.MessageCreate, async (message) => {
+    if (message.author.bot) return;
+    if (message.channel.type === 'DM') return;
+    // what is the point of this file
+  });
 }
