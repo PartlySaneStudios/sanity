@@ -143,22 +143,21 @@ async function handleUpdateCommand(client, interaction) {
 
     await interaction.editReply("Sending new mod version...")
 
-    const response = await SystemUtils.sendCommitRequest("data/main_menu.json",
+    await SystemUtils.sendCommitRequest("data/main_menu.json",
         `Added version ${versionPrototype.latest_version} (${versionPrototype.latest_version_release_date})`,
         interaction.member.user.tag,
         fullJson,
         sha
-    )
-    const [data, error] = response; // destructuring response array
-    if (error) {
-        interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-        console.error('Error making GitHub API request:', error);
-        return
-    }
+    ).then(response => {
+        const [data, error] = response; // destructuring response array
+        if (error) {
+            interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+            console.error('Error making GitHub API request:', error);
+            return
+        }
 
-    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
-
-    interaction.editReply(`[Version ${versionPrototype.latest_version} (${versionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
+        interaction.editReply(`[Version ${versionPrototype.latest_version} (${versionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!`)
+    })
 }
 
 async function handleBetaUpdateCommand(client, interaction) {
@@ -196,20 +195,19 @@ async function handleBetaUpdateCommand(client, interaction) {
 
     await interaction.editReply("Sending new mod version...")
 
-    const response = await SystemUtils.sendCommitRequest("data/main_menu.json",
+    await SystemUtils.sendCommitRequest("data/main_menu.json",
         `Added version ${betaVersionPrototype.latest_version} (${betaVersionPrototype.latest_version_release_date})`,
         interaction.member.user.tag,
         fullJson,
         sha
-    )
-    const [data, error] = response; // destructuring response array
-    if (error) {
-        interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
-        console.error('Error making GitHub API request:', error);
-        return
-    }
+    ).then(response => {
+        const [data, error] = response; // destructuring response array
+        if (error) {
+            interaction.followUp(`Error updating repository:\n\n||\`\`${JSON.stringify(error.response, null, 4)}\`\`||`)
+            console.error('Error making GitHub API request:', error);
+            return
+        }
 
-    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
-
-    interaction.editReply(`[Version ${betaVersionPrototype.latest_version} (${betaVersionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
+        interaction.editReply(`[Version ${betaVersionPrototype.latest_version} (${betaVersionPrototype.latest_version_release_date}) has been added to the mod!\nView the commit here.](${data.data.commit?.html_url})!`)
+    })
 }
