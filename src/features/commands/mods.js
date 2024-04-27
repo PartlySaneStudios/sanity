@@ -367,7 +367,7 @@ async function handleBetaUpdateCommand(client, interaction) {
 
       const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
-      interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}`)
+      interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
     })
 }
 
