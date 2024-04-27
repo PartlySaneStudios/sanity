@@ -8,6 +8,7 @@ const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const ModsData = require("../../data/mods.js");
 const SystemUtils = require("../../utils/SystemUtils.js");
 const config = require("../../config/config.json")
+const SystemUtils = require("../../utils/SystemUtils")
 
 
 const subcommands = {
@@ -196,7 +197,7 @@ async function handleAddCommand(client, interaction) {
   await interaction.editReply("Sending Data")
   await SystemUtils.sendCommitRequest("data/mods.json", `Added ${id} to the mods list`, interaction.member.user.tag, fullData, modsDataSha)
 
-  const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+  const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
   await interaction.editReply(`Successfully added ${id} to the mods list!\n*${pscResetResponse}*`)
 }
@@ -277,7 +278,7 @@ async function handleUpdateCommand(client, interaction) {
         return
       }
 
-      const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+      const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
       interaction.editReply(`[**[Release Channel]** Successfully updated ${id} to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
 
@@ -366,7 +367,7 @@ async function handleBetaUpdateCommand(client, interaction) {
         return
       }
 
-      const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+      const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
       interaction.editReply(`[**[Beta Channel]** Successfully updated ${id} **BETA** to version ${version}](${data.data.commit?.html_url})!\n*${pscResetResponse}`)
     })

@@ -22,6 +22,7 @@ exports.getUrlContent = getUrlContent
 exports.getElementFromHtml = getElementFromHtml
 exports.extractTextFileFromJar = extractTextFileFromJar
 exports.getData = getData
+exports.requestPSC = requestPSC
 
 /*
 * @param {string} path
@@ -148,4 +149,22 @@ function extractTextFileFromJar(jarBuffer, textFileName) {
         throw new Error(`Text file '${textFileName}' not found in the JAR.`);
       }
     });
+}
+
+async function requestPSC(endpoint, user) {
+  if (endpoint[0] == "/") {
+    endpoint = endpoint.substring(1)
+  }
+
+  let headers = new Headers({
+    "Accept"       : "application/json",
+    "Content-Type" : "application/json",
+    "User-Agent"   : "Sanity/"+ user
+  });
+
+  const url = process.env.SERVER_URL + "/" + endpoint
+  return (await fetch(url, {
+    method: 'GET',
+    headers: headers
+  }))
 }
