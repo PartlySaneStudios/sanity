@@ -5,6 +5,7 @@
 
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const config = require("../../config/config.json")
+const SystemUtils = require("../../utils/SystemUtils")
 
 const subcommands = {
     status: { name: "status", function: handleStatusCommand, permission: false },
@@ -21,7 +22,7 @@ try {
 }
 
 async function getItem(id) {
-  const itemData = await (await requestPSC(`/v1/hypixel/skyblockitem`)).json()
+  const itemData = await (await SystemUtils.requestPSC(`/v1/hypixel/skyblockitem`)).json()
 
   const products = itemData.products
   for (let i = 0; i < products.length; i++) {
@@ -109,7 +110,7 @@ module.exports = {
     },  
 }
 async function loadItemAutoComplete() {
-  const skyblockItem = await (await requestPSC("/v1/hypixel/skyblockitem")).json()
+  const skyblockItem = await (await SystemUtils.requestPSC("/v1/hypixel/skyblockitem")).json()
 
   const products = skyblockItem.products
   for (let i = 0; i < products.length; i++) {
@@ -125,7 +126,7 @@ async function handleStatusCommand(client, interaction) {
       .setColor(config.color)
       .setTitle("Status")
       .setFooter({ text: "/v1/status" })
-  const response = await (await requestPSC("/v1/status", interaction.member.user.tag)).json()
+  const response = await (await SystemUtils.requestPSC("/v1/status", interaction.member.user.tag)).json()
 
   embed.addFields({ name: "Status:", value: `Success: \`\`${response.success}\`\``})
 
@@ -140,7 +141,7 @@ async function handleSkyblockPlayerCommand(client, interaction) {
   await interaction.editReply(`Loading data for ${username}`)
   const uuid = (await (await fetch(`https://mowojang.matdoes.dev/users/profiles/minecraft/${username}`)).json()).id
   await interaction.editReply(`Loading data for ${username} (uuid: ${uuid})`)
-  const playerData = await (await requestPSC(`/v1/hypixel/skyblockplayer?uuid=${uuid}`)).json()
+  const playerData = await (await SystemUtils.requestPSC(`/v1/hypixel/skyblockplayer?uuid=${uuid}`)).json()
   
   let embed = createPlayerEmbed(playerData).setTitle(username).setFooter({ text: `${uuid}\n/v1/hypixel/skyblockplayer` })
   await interaction.editReply({ content: " ", embeds: [embed]})
@@ -217,7 +218,7 @@ async function handleResetPSSCache(client, interaction) {
       .setColor(config.color)
       .setTitle("Clear Cache")
       .setFooter({ text: "/v1/pss/middlemanagement/resetpublicdata" })
-  const response = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+  const response = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
   embed.addFields({ name: "Response:", value: `${response}`})
 
@@ -291,22 +292,4 @@ Floor 7: ${currentProfile.masterModeRuns[7]}`
 
 function formatUUID(uuid) {
   return uuid.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
-}
-
-async function requestPSC(endpoint, user) {
-  if (endpoint[0] == "/") {
-    endpoint = endpoint.substring(1)
-  }
-
-  let headers = new Headers({
-    "Accept"       : "application/json",
-    "Content-Type" : "application/json",
-    "User-Agent"   : "Sanity/"+ user
-  });
-
-  const url = process.env.SERVER_URL + "/" + endpoint
-  return (await fetch(url, {
-    method: 'GET',
-    headers: headers
-  }))
 }

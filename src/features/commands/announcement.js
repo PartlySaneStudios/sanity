@@ -8,6 +8,7 @@ const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const MainMenuData = require("../../data/main_menu.js");
 const SystemUtils = require("../../utils/SystemUtils.js");
 const config = require("../../config/config.json");
+const SystemUtils = require("../../utils/SystemUtils")
 
 
 const subcommands = {
@@ -205,7 +206,7 @@ async function handleSetCommand(client, interaction) {
       return
     }
 
-    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+    const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
     interaction.editReply(`[Successfully added announcement at index ${parameters.get("index").value} (${parameters.get("title").value})](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
   })
@@ -269,7 +270,7 @@ async function handleRemoveCommand(client, interaction) {
       return
     }
 
-    const pscResetResponse = await (await requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
+    const pscResetResponse = await (await SystemUtils.requestPSC(`/v1/pss/middlemanagement/resetpublicdata?key=${process.env.CLEAR_CACHE_KEY}`, interaction.member.user.tag)).text()
 
     interaction.editReply(`[Successfully removed announcement at index ${parameters.get("index").value} (${titleToRemove})](${data.data.commit?.html_url})!\n*${pscResetResponse}*`)
   })
