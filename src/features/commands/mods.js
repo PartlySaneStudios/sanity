@@ -8,8 +8,6 @@ const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const ModsData = require("../../data/mods.js");
 const SystemUtils = require("../../utils/SystemUtils.js");
 const config = require("../../config/config.json")
-const SystemUtils = require("../../utils/SystemUtils")
-
 
 const subcommands = {
   list: { name: "list", function: handleListCommand, permission: false },

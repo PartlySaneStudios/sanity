@@ -22,8 +22,7 @@ exports.getStatus = async function () {
 
 exports.getDailyFunFact = async function () {
   try {
-    const url = `${serverUrl}/v1/pss/funfact`;
-    const response = await fetch(url);
+    const response = await SystemUtils.requestPSC("v1/pss/funfact");
 
     if (response.ok) {
       const data = await response.json();
