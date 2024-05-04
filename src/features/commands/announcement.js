@@ -171,9 +171,9 @@ async function handleSetCommand(client, interaction) {
   await interaction.editReply("Creating new announcement...")
   // Creates a new announcement with the new parameters
   let newAnnouncement = { ...AnnouncementPrototype }
-  newAnnouncement.name = parameters.get("title").value
+  newAnnouncement.name = parameters.get("title").value.replace("’", "'");
   newAnnouncement.date = parameters.get("date").value
-  newAnnouncement.description = parameters.get("description").value
+  newAnnouncement.description = parameters.get("description").value.replace("’", "'");
   newAnnouncement.link = parameters.get("link").value
 
   // Checks for valid index
