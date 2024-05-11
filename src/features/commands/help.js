@@ -14,47 +14,37 @@ module.exports = {
     .setName("help")
     .setDescription("Shows the help menu."),
   async run(client, interaction) {
-    const commands = [];
-    const embeds = [];
+    const commands = client.commands.map(command => {
+      return {
+        name: command.data.name,
+        description: command.data.description,
+        options: command.data.options
+      };
+    });
     const amountPerPage = 10;
 
-    for (const command of client.commands) {
-      commands.push(command[1].data.toJSON());
-    }
-
-    let currentPage = 0;
     const pages = Math.ceil(commands.length / amountPerPage);
 
-    for (let i = 0; i < pages; i++) {
-      const embed = {
+    const embeds = Array.from({ length: pages }, (_, i) => {
+      const startIndex = i * amountPerPage;
+      const commandsOnPage = commands.slice(startIndex, startIndex + amountPerPage);
+
+      return {
         title: "Help",
         description: "Here are the commands.",
-        fields: [],
+        fields: commandsOnPage.map(command => ({
+          name: Utils.capitalizeFirstLetter(command.name),
+          value: `${command.description}\nOptions: ${command.options.length > 0
+            ? `/${command.name} <${command.options.map(option => option.name).join("/")}>`
+            : "None"}`,
+        })),
         color: parseInt(config.color.slice(1), 16),
         timestamp: new Date(),
         footer: {
           text: `Page ${i + 1} of ${pages}`
         }
       };
-
-      for (let j = 0; j < amountPerPage; j++) {
-        const command = commands[i * amountPerPage + j];
-        if (command) {
-          embed.fields.push({
-            name: Utils.capitalizeFirstLetter(command.name),
-            value:
-              `
-                            ${command.description}
-                            Options: ${command.options.length > 0
-                ? "\`/" + command.name + " <" + command.options.map(option => `${option.name}`).join("/") + ">\`"
-                : "None"}
-                        `
-          });
-        }
-      }
-
-      embeds.push(embed);
-    }
+    });
 
     const row = new ActionRowBuilder()
       .addComponents(
@@ -67,38 +57,33 @@ module.exports = {
           .setCustomId("next")
           .setLabel("Next")
           .setStyle(ButtonStyle.Primary)
-      )
+      );
 
-    if (pages == 1) {
+    const replyOptions = { embeds: [embeds[0]], components: [row] };
+    if (pages === 1) {
       return interaction.reply({ embeds: [embeds[0]] });
     }
-    await interaction.reply({ embeds: [embeds[currentPage]], components: [row] }).then(async response => {
-      const collectorFilter = i => i.user.id === interaction.user.id;
 
-      const collector = response.createMessageComponentCollector({ filter: collectorFilter, time: 60000 });
+    const response = await interaction.reply(replyOptions);
+    const collectorFilter = i => i.user.id === interaction.user.id;
+    const collector = response.createMessageComponentCollector({ filter: collectorFilter, time: 60000 });
 
-      collector.on("collect", async i => {
-        if (i.customId === "next") {
-          currentPage++;
-        } else if (i.customId === "previous") {
-          currentPage--;
-        }
+    let currentPage = 0;
+    collector.on("collect", async i => {
+      if (i.customId === "next") {
+        currentPage++;
+      } else if (i.customId === "previous") {
+        currentPage--;
+      }
 
-        if (currentPage == 0) {
-          row.components[0].setDisabled(true);
-        } else if (currentPage == pages - 1) {
-          row.components[0].setDisabled(false);
-        } else {
-          row.components[0].setDisabled(false);
-          row.components[1].setDisabled(false);
-        }
+      row.components[0].setDisabled(currentPage === 0);
+      row.components[1].setDisabled(currentPage === pages - 1);
 
-        await i.update({ embeds: [embeds[currentPage]], components: [row] });
-      });
+      await i.update({ embeds: [embeds[currentPage]], components: [row] });
+    });
 
-      collector.on("end", async () => {
-        await response.edit({ components: [] });
-      });
+    collector.on("end", async () => {
+      await response.edit({ components: [] });
     });
   }
-}
+};

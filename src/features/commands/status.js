@@ -6,12 +6,12 @@
 
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const fs = require("fs");
-const config = require("../../config/config.json")
+const config = require("../../config/config.json");
 
 const subcommands = {
   set: { name: "set", function: handleSetCommand },
   toggle: { name: "toggle", function: handleToggleCommand },
-}
+};
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -55,7 +55,7 @@ module.exports = {
     ),
   async run(client, interaction) {
     if (!config.allowedAnnouncementUsers.includes(interaction.member.id))
-      return interaction.reply(`You do not have permission to use this command!`)
+      return interaction.reply(`You do not have permission to use this command!`);
 
     const subcommand = interaction.options.getSubcommand();
     if (subcommands[subcommand]) {
@@ -74,20 +74,20 @@ async function handleSetCommand(interaction) {
   const embed = new EmbedBuilder()
     .setTitle("Status")
     .setDescription(`Set the status to ${status} with activity ${type} and text ${text}`)
-    .setColor(config.color)
+    .setColor(config.color);
 
   await interaction.reply({ embeds: [embed] });
 }
 
 async function handleToggleCommand(interaction) {
-  const active = !config.status.active
+  const active = !config.status.active;
 
   writeStatus(config.status.status, config.status.type, config.status.text, active);
 
   const embed = new EmbedBuilder()
     .setTitle("Status")
     .setDescription(`Set the status to ${active ? "active" : "inactive"}`)
-    .setColor(config.color)
+    .setColor(config.color);
 
   await interaction.reply({ embeds: [embed] });
 }
@@ -98,7 +98,7 @@ function writeStatus(status, type, text, active = config.status.active) {
     status: status,
     type: type,
     text: text
-  }
+  };
 
-  fs.writeFileSync("./src/config/config.json", JSON.stringify(config, null, 4))
+  fs.writeFileSync("./src/config/config.json", JSON.stringify(config, null, 4));
 }

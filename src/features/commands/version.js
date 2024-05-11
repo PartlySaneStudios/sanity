@@ -71,8 +71,8 @@ async function handleGetCommand(client, interaction) {
   const version = await MainMenuData.getVersion()
   const betaVersion = await MainMenuData.getBetaVersion()
 
-  const latestVersion = version.latest_version.replace("beta", "Beta")
-  const latestBetaVersion = betaVersion.latest_version.replace("beta", "Beta").replace("prerelease", "Pre-release")
+  const latestVersion = version.latest_version
+  const latestBetaVersion = betaVersion.latest_version
 
   const embed = new EmbedBuilder()
     .setColor(config.color)
