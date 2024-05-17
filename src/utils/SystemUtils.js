@@ -157,14 +157,14 @@ async function requestPSC(endpoint, user) {
   }
 
   let headers = new Headers({
-    "Accept"       : "application/json",
-    "Content-Type" : "application/json",
-    "User-Agent"   : "Sanity/"+ user
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "User-Agent": "Sanity/" + user
   });
 
   const url = process.env.SERVER_URL + "/" + endpoint
-  return (await fetch(url, {
+  return await fetch(url, {
     method: 'GET',
     headers: headers
-  }))
+  })
 }

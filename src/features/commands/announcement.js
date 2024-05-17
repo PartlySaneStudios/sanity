@@ -110,28 +110,22 @@ module.exports = {
 }
 
 async function handleListCommand(client, interaction) {
-  // Creates new embed
   const embed = new EmbedBuilder()
     .setColor(config.color)
     .setTitle("Announcements:")
     .setURL(`https://github.com/${process.env.OWNER}/${process.env.REPO}/blob/main/data/main_menu.json`)
 
-  // Get's announcement data
   const announcements = await MainMenuData.getAnnouncements();
 
-  // Creates a new field per announcement
-  for (let i = 1; i <= announcements.length; i++) {
-    const announcement = announcements[i - 1];
-    let field = ""
-    field += `Title: \`\`\`${announcement.name}\`\`\`\n`
-    field += `Date: \`\`\`${announcement.date}\`\`\`\n`
-    field += `Description: \`\`\`${announcement.description}\`\`\`\n`
-    field += `[Link:](${announcement.link}) \`\`\`${announcement.link}\`\`\``
+  announcements.forEach((announcement, i) => {
+    let field = `Title: \`\`\`${announcement.name}\`\`\`\n`;
+    field += `Date: \`\`\`${announcement.date}\`\`\`\n`;
+    field += `Description: \`\`\`${announcement.description}\`\`\`\n`;
+    field += `[Link:](${announcement.link}) \`\`\`${announcement.link}\`\`\``;
 
-    embed.addFields({ name: `${i}: `, value: field })
-  }
+    embed.addFields({ name: `${i + 1}: `, value: field });
+  });
 
-  // Responds with the embed
   await interaction.reply({ embeds: [embed] });
 }
 
@@ -143,7 +137,6 @@ async function handleSetCommand(client, interaction) {
     link: "",
   }
 
-  // Creates an initial reply 
   await interaction.reply("Loading...")
 
   await interaction.editReply("Requesting data...")
@@ -213,7 +206,6 @@ async function handleSetCommand(client, interaction) {
 
 
 async function handleRemoveCommand(client, interaction) {
-  // Creates an initial reply 
   await interaction.reply("Loading...")
 
   // Gets necessary data
@@ -229,7 +221,6 @@ async function handleRemoveCommand(client, interaction) {
     announcements = fullJson.announcements
   } catch (error) {
     console.error('Error getting GitHub API data:', error);
-    // console.error(`${error.response}`)
     interaction.followUp(`Error getting GitHub API data:\n\n||\`\`${JSON.stringify(error)}\`\`||`)
     return
   }
