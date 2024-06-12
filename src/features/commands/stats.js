@@ -13,74 +13,73 @@ const octokit = new Octokit({
 })
 
 const subcommands = {
-    downloads: { name: "downloads", function: handleDownloadsCommand, permission: false },
+  downloads: { name: "downloads", function: handleDownloadsCommand, permission: false },
 }
 
 let versions = []
 try {
   loadAutoComplete()
-} catch(e) {
+} catch (e) {
   console.error(e)
 }
 
 module.exports = {
-    data: new SlashCommandBuilder()
-      .setName("stats")
-      .setDescription("Using the Partly Sane Cloud API")
-      .addSubcommand(subcommand => subcommand
-          .setName("downloads")
-          .setDescription("View the total download count for Partly Sane Skies")
-          .addStringOption(option => option
-            .setName("version")
-            .setRequired(false)
-            .setAutocomplete(true)
-            .setDescription("Specified version to see downloads")
-          )
-      ),
+  data: new SlashCommandBuilder()
+    .setName("stats")
+    .setDescription("Using the Partly Sane Cloud API")
+    .addSubcommand(subcommand => subcommand
+      .setName("downloads")
+      .setDescription("View the total download count for Partly Sane Skies")
+      .addStringOption(option => option
+        .setName("version")
+        .setRequired(false)
+        .setAutocomplete(true)
+        .setDescription("Specified version to see downloads")
+      )
+    ),
+  async autocomplete(client, interaction) {
+    const focusedValue = interaction.options.getFocused();
 
-    async run(client, interaction) {
-        // Gets the subcommand
-        const subcommand = interaction.options.getSubcommand();
+    const results = [];
+    for (let i = 0; i < versions.length; i++) {
+      const version = versions[i]
+      if (version.toLowerCase().includes(focusedValue.toLowerCase())) {
+        results.push({
+          name: version,
+          value: version,
+        });
+      }
+    }
 
-        const subcommandObject = subcommands[subcommand]
+    // remove elements after 25
+    results.splice(25);
 
-        if (subcommandObject) {
-            // Checks for permission
-            if (subcommandObject.permission && !config.allowedClearCacheUsers.includes(interaction.member.id))
-                return interaction.reply(`You do not have permission to use this command!`)
+    await interaction.respond(results);
+  },
+  async run(client, interaction) {
+    // Gets the subcommand
+    const subcommand = interaction.options.getSubcommand();
 
-            // Runs the subcommand
-            try {
-                await subcommandObject.function(client, interaction)
-            } catch (e) {
-                console.error(e)
-                try {
-                    await interaction.followUp("Failed to run command!")
-                } catch {
-                    await interaction.reply("Failed to run command!")
-                }
-            }
-        }
-    },
-    async autocomplete(client, interaction) {
-      const focusedValue = interaction.options.getFocused();
-  
-      const results = [];
-      for (let i = 0; i < versions.length; i++) {
-        const version = items[i]
-        if (version.toLowerCase().includes(focusedValue.toLowerCase())) {
-          results.push({
-            name: version,
-            value: version,
-          });
+    const subcommandObject = subcommands[subcommand]
+
+    if (subcommandObject) {
+      // Checks for permission
+      if (subcommandObject.permission && !config.allowedClearCacheUsers.includes(interaction.member.id))
+        return interaction.reply(`You do not have permission to use this command!`)
+
+      // Runs the subcommand
+      try {
+        await subcommandObject.function(client, interaction)
+      } catch (e) {
+        console.error(e)
+        try {
+          await interaction.followUp("Failed to run command!")
+        } catch {
+          await interaction.reply("Failed to run command!")
         }
       }
-  
-      // remove elements after 25
-      results.splice(25);
-  
-      await interaction.respond(results);
     }
+  }
 }
 
 
@@ -133,7 +132,7 @@ async function handleDownloadsCommand(client, interaction) {
   if (specifiedVersion == null || mergedDownloads[specifiedVersion] == null) { // if there's no specified version, show the 5 most recent
     const versions = Object.keys(mergedDownloads)
 
-    for (let i = 0; i < versions.length && i < 5 ; i++) {
+    for (let i = 0; i < versions.length && i < 5; i++) {
       const totalDownloads = mergedDownloads[versions[i]].githubDownloads + mergedDownloads[versions[i]].modrinthDownloads
       versionDownloadString += `__${versions[i]}__ *(${mergedDownloads[versions[i]].date})*\n${totalDownloads} downloads total - ${mergedDownloads[versions[i]].githubDownloads} GitHub, ${mergedDownloads[versions[i]].modrinthDownloads} Modrinth\n\n`
     }
@@ -148,15 +147,15 @@ async function handleDownloadsCommand(client, interaction) {
   const embed = new EmbedBuilder()
     .setTitle("Download Count")
     .setColor(config.color)
-    .addFields({ name: "Total:", value: totalDownloadString})
-    .addFields({ name: "By Version", value: versionDownloadString})
-  
+    .addFields({ name: "Total:", value: totalDownloadString })
+    .addFields({ name: "By Version", value: versionDownloadString })
+
   await interaction.editReply({ content: " ", embeds: [embed] })
 
 }
 
 async function loadAutoComplete() {
-  items = await Object.keys(await getGithubDownloads())
+  versions = await Object.keys(await getGithubDownloads())
 }
 
 
@@ -168,7 +167,7 @@ async function getGithubDownloads() {
   let page = 1
 
   const obj = {}
-  while(isBreak) {
+  while (isBreak) {
     const response = (await octokit.request('GET /repos/{owner}/{repo}/releases?per_page=100&page={page}', {
       owner: 'PartlySaneStudios',
       repo: 'partly-sane-skies',
@@ -184,7 +183,7 @@ async function getGithubDownloads() {
 
     for (let i = 0; i < response.length; i++) {
       const version = response[i]
-      
+
       const versionTag = version.tag_name
       let downloadCount = 0
       for (let j = 0; j < version.assets.length; j++) {
@@ -199,7 +198,7 @@ async function getGithubDownloads() {
 
       // Format: "created_at": "2024-04-22T01:48:05Z",
       const date = new Date(version.published_at);
-      obj[versionTag].date= StringUtils.formatDate(date);
+      obj[versionTag].date = StringUtils.formatDate(date);
     }
     page++
   }
